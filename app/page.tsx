@@ -1,95 +1,57 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-
-export default function Home() {
+import styles from "@/styles/home.module.css";
+import { services } from "@/public/data/services";
+import Service from "@/components/Service";
+import WaveSVG from "./WaveSVG";
+import Link from "next/link";
+import Image from "next/image";
+export default function page() {
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      <div className={`${styles.hero} flex flex-column `}>
+        <div className={`   width-full text-center ${styles.motto}`}>
+          <h1 className="fontXL">Your One Stop Station for all your </h1>
+          <h1 className="fontXL">
+            <span className="primary-gradient-font ">Information </span>
+            Needs
+          </h1>
+        </div>
+        <div className={`${styles.getStarted} text-center `}>
+          <h3 className="description">
+            Start browsing the Information we offer
+          </h3>
+          <button className="btn-dark margin-top-1">Get Started</button>
+        </div>
+
+        <WaveSVG className={styles.wave} />
+      </div>
+      <div className={`${styles.services}`}>
+        <WaveSVG className={styles.invertedWave} />
+        <h1 className="fontL text-center text-light">Services</h1>
+        <div className={`flex flex-center  flex-gap-1 ${styles.wrapper}`}>
+          {services.map((service) => (
+            <Service key={service.name} service={service} />
+          ))}
         </div>
       </div>
-
-      <div className={styles.center}>
+      <div className={`${styles.about} flex flex-center flex-between`}>
+        <div className={`${styles.aboutContent} flex flex-column flex-center`}>
+          <h1 className="fontL text-center primary-gradient-font">
+            Open Source
+          </h1>
+          <p className="description text-center">
+            <b>InfoSphere</b> is compeletely open source and free to use. You
+            can even contribute to the project by clicking
+            <Link href="https://github.com/Manj0tBenipal/infosphere">here</Link>
+            . The data we use is curated from public APIs.
+          </p>
+        </div>
         <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+          src="/svg/opensource.svg"
+          height={400}
+          width={400}
+          alt="opensource"
         />
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
     </main>
-  )
+  );
 }

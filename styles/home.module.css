@@ -1,0 +1,58 @@
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  width: 100%;
+  min-height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+}
+.heroImage {
+  z-index: -2;
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 200px);
+}
+.hero {
+  min-height: calc(100vh - 100px);
+  gap: 10px;
+  background: transparent;
+  overflow: hidden;
+}
+
+.motto {
+  margin-top: 5rem;
+  line-height: 3rem;
+}
+.getStarted {
+  margin-top: 2rem;
+}
+.wave {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  z-index: -1;
+}
+.invertedWave {
+  transform: rotate(180deg);
+  position: absolute;
+  top: -20px;
+  left: 0;
+  z-index: -1;
+}
+.services {
+  position: relative;
+  overflow: hidden;
+}
+.wrapper {
+  padding: 2rem;
+}
+
+.about {
+  padding: 2rem;
+  padding-block: 5rem;
+}
+.aboutContent {
+}

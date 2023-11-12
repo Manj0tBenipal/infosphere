@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  --color-primary: rgb(164, 55, 219);
+  --color-secondary: rgb(255, 11, 255);
+  --linear-gradient-primary: linear-gradient(
+    90deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+  --linear-gradient-green: linear-gradient(
+    90deg,
+    rgb(0, 255, 0),
+    rgb(235, 238, 238)
+  );
+}
+body {
+  font-family: "Poppins", sans-serif;
+  max-width: 1220px;
+  margin: auto;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.flex {
+  display: flex;
+}
+.align-center {
+  align-items: center;
+}
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+.flex-between {
+  justify-content: space-between;
+  align-items: center;
+}
+.flex-column {
+  flex-direction: column;
+}
+.flex-start {
+  justify-content: flex-start;
+}
+.primary-gradient-font {
+  background: var(--linear-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.green-gradient-font {
+  background: var(--linear-gradient-green);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* .linear-gradient-font::after {
+    content: "";
+  box-shadow: 1px 1px 50px 10px var(--color-primary),
+    -1px -1px 50px 10px var(--color-secondary);
+} */
+
+.width-full {
+  width: 100%;
+}
+.text-center {
+  text-align: center;
+}
+.description {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.fontL {
+  font-size: 2rem;
+}
+.fontXL {
+  font-size: 2.5rem;
+}
+.flex-gap-1 {
+  gap: 1rem;
+}
+.flex-gap-small {
+  gap: 0.5rem;
+}
+
+.margin-auto {
+  margin: auto;
+}
+button {
+  border: none;
+  background: none;
+}
+button:hover {
+  cursor: pointer;
+}
+.margin-top-1 {
+  margin-top: 1rem;
+}
+.btn-primary {
+  padding: 7px 15px;
+  display: inline-block;
+  color: white;
+  background-color: var(--color-primary);
+  border-radius: 20px;
+  transition: all 0.2s ease-in-out;
+}
+.btn-dark {
+  padding: 10px 20px;
+  color: white;
+  background-color: #000000;
+  border-radius: 20px;
+  transition: all 0.2s ease-in-out;
+}
+.btn-primary:hover {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+}
+.btn-outline {
+  padding: 10px 20px;
+  color: white;
+  border: 1px solid var(--color-primary);
+  border-radius: 20px;
+}
+
+.text-light {
+  color: white;
+}
