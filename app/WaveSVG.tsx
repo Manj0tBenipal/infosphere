@@ -3,15 +3,15 @@ export default function WaveSVG({ className }: { className: string }) {
     <svg
       id="wave"
       className={className}
-      style={{  transition: "0.3s" }}
+      style={{ transition: "0.3s" }}
       viewBox="0 0 1440 490"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
         <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
-          <stop stop-color="rgba(164, 55, 219, 1)" offset="0%"></stop>
-          <stop stop-color="rgba(164, 55, 219, 1)" offset="100%"></stop>
+          <stop stopColor="rgba(164, 55, 219, 1)" offset="0%"></stop>
+          <stop stopColor="rgba(164, 55, 219, 1)" offset="100%"></stop>
         </linearGradient>
       </defs>
       <path
@@ -21,8 +21,8 @@ export default function WaveSVG({ className }: { className: string }) {
       ></path>
       <defs>
         <linearGradient id="sw-gradient-1" x1="0" x2="0" y1="1" y2="0">
-          <stop stop-color="rgba(255, 11, 255, 1)" offset="0%"></stop>
-          <stop stop-color="rgba(255, 11, 255, 1)" offset="100%"></stop>
+          <stop stopColor="rgba(255, 11, 255, 1)" offset="0%"></stop>
+          <stop stopColor="rgba(255, 11, 255, 1)" offset="100%"></stop>
         </linearGradient>
       </defs>
       <path

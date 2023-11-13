@@ -9,8 +9,8 @@ export default function page() {
     <main className={styles.main}>
       <div className={`${styles.hero} flex flex-column `}>
         <div className={`   width-full text-center ${styles.motto}`}>
-          <h1 className="fontXL">Your One Stop Station for all </h1>
-          <h1 className="fontXL">
+          <h1 className="font2XL">Your One Stop Station for all </h1>
+          <h1 className="font2XL">
             <span className="primary-gradient-font ">Information </span>
             Needs
           </h1>
@@ -27,7 +27,7 @@ export default function page() {
       <div className={`${styles.services}`}>
         <WaveSVG className={styles.invertedWave} />
         <h1 className="fontL text-center text-light">Services</h1>
-        <div className={`flex flex-center  flex-gap-1 ${styles.wrapper}`}>
+        <div className={`flex flex-center  ${styles.wrapper}`}>
           {services.map((service) => (
             <Service key={service.name} service={service} />
           ))}
@@ -46,6 +46,7 @@ export default function page() {
           </p>
         </div>
         <Image
+          priority
           src="/svg/opensource.svg"
           height={400}
           width={400}

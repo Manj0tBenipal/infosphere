@@ -11,12 +11,10 @@
 }
 .heroImage {
   z-index: -2;
-  position: absolute;
-  bottom: 0;
-  left: calc(50% - 200px);
 }
 .hero {
-  min-height: calc(100vh - 100px);
+  position: relative;
+
   gap: 10px;
   background: transparent;
   overflow: hidden;
@@ -24,15 +22,11 @@
 
 .motto {
   margin-top: 5rem;
-  line-height: 3rem;
 }
 .getStarted {
   margin-top: 2rem;
 }
 .wave {
-  position: absolute;
-  bottom: -20px;
-  left: 0;
   z-index: -1;
 }
 .invertedWave {
@@ -41,17 +35,23 @@
   top: -20px;
   left: 0;
   z-index: -1;
+  width: 100%;
 }
 .services {
   position: relative;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 .wrapper {
   padding: 2rem;
+  margin: auto;
+  max-width: var(--inner-el-max-width);
 }
 
 .about {
   padding: 2rem;
   padding-block: 5rem;
+  margin: auto;
+  max-width: var(--inner-el-max-width);
 }
+
 
