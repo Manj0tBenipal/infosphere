@@ -9,8 +9,8 @@ export default function Navbar() {
         <Image
           priority
           src="/logo.png"
-          width={55}
-          height={55}
+          width={65}
+          height={65}
           style={{ objectFit: "cover" }}
           alt="logo"
         />

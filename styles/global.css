@@ -100,7 +100,7 @@ button:hover {
   margin-top: 1rem;
 }
 .btn-primary {
-  padding: 7px 15px;
+  padding: 5px 10px;
   display: inline-block;
   color: white;
   background-color: var(--color-primary);

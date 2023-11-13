@@ -9,7 +9,7 @@ export default function page() {
     <main className={styles.main}>
       <div className={`${styles.hero} flex flex-column `}>
         <div className={`   width-full text-center ${styles.motto}`}>
-          <h1 className="fontXL">Your One Stop Station for all your </h1>
+          <h1 className="fontXL">Your One Stop Station for all </h1>
           <h1 className="fontXL">
             <span className="primary-gradient-font ">Information </span>
             Needs
