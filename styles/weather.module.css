@@ -1,5 +1,10 @@
-.currWeatherTile {
+.weatherContentWrapper {
   max-width: var(--inner-el-max-width);
+  padding: 1rem;
+  margin: auto;
+  
+}
+.currWeatherTile {
   margin: auto;
   background: transparent;
   backdrop-filter: blur(4px);
@@ -24,4 +29,7 @@
   max-width: fit-content;
   padding: 1rem;
   box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
+}
+.graphsWrapper {
+  padding: 1rem;
 }

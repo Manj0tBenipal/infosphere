@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   DailyWeather,
   DailyWeatherData,
+  HourlyWeather,
   HourlyWeatherData,
   Location,
   Weather,
@@ -12,6 +13,8 @@ import {
 } from "@/public/types/Weather";
 import WeatherChip from "@/components/WeatherChip";
 import Image from "next/image";
+import { get } from "http";
+import HourlyWeatherChip from "@/components/HourlyWeatherChip";
 export default function page() {
   const [location, setLocation] = useState<Location>({
     latitude: "",
@@ -24,6 +27,24 @@ export default function page() {
   const [dailyWeather, setDailyWeather] = useState<DailyWeather>({
     isFetched: false,
   } as DailyWeather);
+  const [selectedDay, setSelectedDay] = useState<number>(0);
+
+  function getWeatherChips(weather: Weather) {
+    const weatherChips: React.ReactElement[] = Object.keys(weather.data).map(
+      (key) => {
+        return (
+          <WeatherChip
+            key={key}
+            img={weather.data[key as keyof WeatherData].img}
+            value={weather.data[key as keyof WeatherData].value}
+            heading={key.toUpperCase()}
+            unit={weather.data[key as keyof WeatherData].units}
+          />
+        );
+      }
+    );
+    return weatherChips;
+  }
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -167,39 +188,63 @@ export default function page() {
       });
       const dailyWeather: DailyWeather = {
         data: dailyForecast,
+        units: data.hourly_units,
         isFetched: true,
       };
       setDailyWeather(() => dailyWeather);
     }
   }, [location]);
-  if (weather.isFetched === false) {
-    return <div className="flex flex-column flex-center">Loading...</div>;
-  } else {
-    return (
-      <div className="flex flex-column flex-center">
-        <Image
-          fill
-          priority
-          src="/svg/weather/weatherBg.svg"
-          alt="weather"
-          style={{ zIndex: -1 }}
-        />
-        <div
-          className={`${styles.currWeatherTile} flex flex-center flex-gap-1`}
-        >
-          {Object.keys(weather.data).map((key) => {
-            return (
-              <WeatherChip
-                key={key}
-                img={weather.data[key as keyof WeatherData].img}
-                value={weather.data[key as keyof WeatherData].value}
-                heading={key.toUpperCase()}
-                unit={weather.data[key as keyof WeatherData].units}
-              />
-            );
-          })}
-        </div>
+  console.log(dailyWeather);
+  return (
+    <>
+      <Image
+        fill
+        priority
+        src="/svg/weather/weatherBg.svg"
+        alt="weather"
+        style={{ zIndex: -1 }}
+      />
+      <div
+        className={`${styles.weatherContentWrapper} flex flex-column flex-center`}
+      >
+        {weather.isFetched && (
+          <div
+            className={`${styles.currWeatherTile} flex flex-center flex-gap-1`}
+          >
+            {getWeatherChips(weather)}
+          </div>
+        )}
+        {dailyWeather.isFetched && (
+          <div
+            className={`${styles.forecastWeatherTile} flex flex-center flex-column width-full`}
+          >
+            <div className="flex flex-center flex-column">
+              {dailyWeather.data.map((el: DailyWeatherData, index: number) => (
+                <span
+                  className={`${styles.daySelector}`}
+                  onClick={() => setSelectedDay(index)}
+                >
+                  {el.day}
+                </span>
+              ))}
+            </div>
+            <div className={`flex  flex-scroll-x width-full`}>
+              {dailyWeather.data[selectedDay].hourlyData.map(
+                (el: HourlyWeatherData) => {
+                  return (
+                    <HourlyWeatherChip
+                      key={el.hour}
+                      value={el.temperature}
+                      unit={dailyWeather.units.temperature_2m}
+                      time={el.hour}
+                    />
+                  );
+                }
+              )}
+            </div>
+          </div>
+        )}
       </div>
-    );
-  }
+    </>
+  );
 }

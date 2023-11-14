@@ -27,19 +27,20 @@ export interface HourlyWeather {
   isFetched: boolean;
 }
 export interface HourlyWeatherData {
-  uvIndex: WeatherProperty;
-  visibility: WeatherProperty;
-  windSpeed: WeatherProperty;
+  uvIndex: number;
+  visibility: number;
+  windSpeed: number;
   windDirection: string;
   hour: string;
-  temperature: WeatherProperty;
-  humidity: WeatherProperty;
-  feelsLike: WeatherProperty;
-  precipitation: WeatherProperty;
-  precipitationProbability: WeatherProperty;
+  temperature: number;
+  humidity: number;
+  feelsLike: number;
+  precipitation: number;
+  precipitationProbability: number;
 }
 export interface DailyWeather {
   data: DailyWeatherData[];
+  units: any;
   isFetched: boolean;
 }
 export interface DailyWeatherData {
