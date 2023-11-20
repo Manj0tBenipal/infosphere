@@ -1,5 +1,4 @@
 "use client";
-export const dynamic = "no-store";
 import styles from "@/styles/weather.module.css";
 import { useEffect, useState } from "react";
 import {
@@ -13,7 +12,7 @@ import WeatherChip from "@/components/WeatherChip";
 import Image from "next/image";
 
 import HourlyWeatherChip from "@/components/HourlyWeatherChip";
-export default function page() {
+export default function Page() {
   const [location, setLocation] = useState<Location>({
     latitude: "",
     longitude: "",

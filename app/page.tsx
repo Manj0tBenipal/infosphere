@@ -4,7 +4,7 @@ import Service from "@/components/Service";
 import WaveSVG from "./WaveSVG";
 import Link from "next/link";
 import Image from "next/image";
-export default function page() {
+export default function Page() {
   return (
     <main className={styles.main}>
       <div className={`${styles.hero} flex flex-column `}>
