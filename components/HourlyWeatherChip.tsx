@@ -8,11 +8,16 @@ export default function HourlyWeatherChip({
 }) {
   return data.time.map((el: string, index: number) => {
     return (
-      <div className={` flex flex-center flex-column flex-gap-small`}>
+      <div
+        key={index}
+        className={` flex flex-center flex-column flex-gap-small`}
+      >
         <h4>{el}</h4>
         {Object.keys(data).map((key: string) => {
           return key === "day" || "time" ? null : (
-            <span>{data[key as keyof WeatherForecastData][index]}</span>
+            <span key={key}>
+              {data[key as keyof WeatherForecastData][index]}
+            </span>
           );
         })}
       </div>

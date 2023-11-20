@@ -131,15 +131,6 @@ export default function page() {
       setWeather(weather);
     }
     async function getForecastWeather() {
-      const date = new Date();
-
-      const days: string[] = [];
-      for (let i = 0; i < 7; i++) {
-        days.push(
-          `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + i}`
-        );
-      }
-
       const hours: string[] = [];
       for (let i = 0; i < 24; i++) {
         hours.push(`${i.toString().length === 1 ? "0" + i : i}:00`);
@@ -149,6 +140,26 @@ export default function page() {
         `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,visibility,wind_speed_10m,wind_direction_10m,uv_index`
       );
       const data: any = await res.json();
+
+      /**
+       * Dates are extracted from the data returned by API to avoid any Conflicts
+       * Using the Date() caused conflicts in dates
+       */
+
+      const days: string[] = [];
+      data.hourly.time.map(
+        (dateTime: string, index: number, array: string[]) => {
+          const date: string = dateTime.split("T")[0];
+          if (index > 0) {
+            if (array[index - 1].split("T")[0] !== date) {
+              days.push(date);
+            }
+          } else {
+            days.push(date);
+          }
+        }
+      );
+
       const forecastWeather: WeatherForecastData[] = days.map((day) => {
         let hrs: string[] = [];
         let temperature: number[] = [];
@@ -200,6 +211,7 @@ export default function page() {
       }));
     }
   }, [location]);
+  console.log(forecastedWeather.isFetched && forecastedWeather.data[0]);
 
   return (
     <>
@@ -225,9 +237,12 @@ export default function page() {
         <div className={`${styles.forecastWeatherContainer} flex `}>
           <div className={`flex flex-column flex-gap-small `}>
             {Object.keys(forecastedWeather.data[0]).map((key: string) => {
-              return key !== "day" ? <h4>{key.toUpperCase()}</h4> : null;
+              return key !== "day" ? (
+                <h4 key={key}>{key.toUpperCase()}</h4>
+              ) : null;
             })}
           </div>
+
           <HourlyWeatherChip data={forecastedWeather.data[selectedDay]} />
         </div>
       )}
