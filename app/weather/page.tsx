@@ -3,17 +3,15 @@ export const dynamic = "no-store";
 import styles from "@/styles/weather.module.css";
 import { useEffect, useState } from "react";
 import {
-  DailyWeather,
-  DailyWeatherData,
-  HourlyWeather,
-  HourlyWeatherData,
   Location,
   Weather,
   WeatherData,
+  WeatherForecast,
+  WeatherForecastData,
 } from "@/public/types/Weather";
 import WeatherChip from "@/components/WeatherChip";
 import Image from "next/image";
-import { get } from "http";
+
 import HourlyWeatherChip from "@/components/HourlyWeatherChip";
 export default function page() {
   const [location, setLocation] = useState<Location>({
@@ -24,9 +22,9 @@ export default function page() {
   const [weather, setWeather] = useState<Weather>({
     isFetched: false,
   } as Weather);
-  const [dailyWeather, setDailyWeather] = useState<DailyWeather>({
-    isFetched: false,
-  } as DailyWeather);
+  const [forecastedWeather, setForecastedWeather] = useState<WeatherForecast>(
+    {} as WeatherForecast
+  );
   const [selectedDay, setSelectedDay] = useState<number>(0);
 
   function getWeatherChips(weather: Weather) {
@@ -79,9 +77,7 @@ export default function page() {
       if (weather.isFetched === false) {
         getCurrentWeather();
       }
-      if (dailyWeather.isFetched === false) {
-        getForecastWeather();
-      }
+
       getForecastWeather();
     }
     async function getCurrentWeather() {
@@ -135,66 +131,76 @@ export default function page() {
       setWeather(weather);
     }
     async function getForecastWeather() {
+      const date = new Date();
+
+      const days: string[] = [];
+      for (let i = 0; i < 7; i++) {
+        days.push(
+          `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + i}`
+        );
+      }
+
+      const hours: string[] = [];
+      for (let i = 0; i < 24; i++) {
+        hours.push(`${i.toString().length === 1 ? "0" + i : i}:00`);
+      }
+
       const res = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,visibility,wind_speed_10m,wind_direction_10m,uv_index`
       );
-      const data = await res.json();
-
-      //Mapping over the provided dates and filtering the duplicate values
-      const dates: string[] = data.hourly.time
-        .filter((el: string, i: number, array: string[]) => {
-          const date = el.split("T")[0];
-          if (i > 0 && array[i - 1].split("T")[0] === date) {
-            return false;
-          } else {
-            return true;
-          }
-        })
-        .map((el: string) => el.split("T")[0]);
-      const hours: string[] = [];
-
-      //Generating hours to match the data for hourly temperature
-      for (let i: number = 0; i < 24; i++) {
-        if (i.toString().length < 2) {
-          hours.push(`0${i}:00`);
-        } else {
-          hours.push(`${i}:00`);
-        }
-      }
-      const dailyForecast: DailyWeatherData[] = dates.map((date: string) => {
-        const day: string = date;
-
-        const hourlyWeather: HourlyWeatherData[] = hours.map((hour: string) => {
+      const data: any = await res.json();
+      const forecastWeather: WeatherForecastData[] = days.map((day) => {
+        let hrs: string[] = [];
+        let temperature: number[] = [];
+        let humidity: number[] = [];
+        let feelsLike: number[] = [];
+        let precipitationProbability: number[] = [];
+        let precipitation: number[] = [];
+        let visibility: number[] = [];
+        let windSpeed: number[] = [];
+        let windDirection: string[] = [];
+        let uvIndex: number[] = [];
+        hours.map((el) => {
           const index = data.hourly.time.findIndex(
-            (el: string) => el === `${date}T${hour}`
+            (timeAndDay: string) => timeAndDay === `${day}T${el}`
           );
-          const weather: HourlyWeatherData = {
-            uvIndex: data.hourly.uv_index[index],
-            temperature: data.hourly.temperature_2m[index],
-            humidity: data.hourly.relative_humidity_2m[index],
-            feelsLike: data.hourly.apparent_temperature[index],
-            precipitationProbability:
-              data.hourly.precipitation_probability[index],
-            precipitation: data.hourly.precipitation[index],
-            visibility: data.hourly.visibility[index],
-            windSpeed: data.hourly.wind_speed_10m[index],
-            windDirection: data.hourly.wind_direction_10m[index],
-            hour: hour,
-          };
-          return weather;
-        });
 
-        return { day: day, hourlyData: hourlyWeather };
+          temperature.push(data.hourly.temperature_2m[index]);
+          humidity.push(data.hourly.relative_humidity_2m[index]);
+
+          feelsLike.push(data.hourly.apparent_temperature[index]);
+          precipitationProbability.push(
+            data.hourly.precipitation_probability[index]
+          );
+          precipitation.push(data.hourly.precipitation[index]);
+          visibility.push(data.hourly.visibility[index]);
+          windSpeed.push(data.hourly.wind_speed_10m[index]);
+          windDirection.push(data.hourly.wind_direction_10m[index]);
+          uvIndex.push(data.hourly.uv_index[index]);
+          hrs.push(el);
+        });
+        const dailyWeather: WeatherForecastData = {
+          time: hrs,
+          temperature: temperature,
+          humidity: humidity,
+          feelsLike: feelsLike,
+          precipitationProbability: precipitationProbability,
+          precipitation: precipitation,
+          visibility: visibility,
+          windSpeed: windSpeed,
+          windDirection: windDirection,
+          uvIndex: uvIndex,
+          day: day,
+        };
+        return dailyWeather;
       });
-      const dailyWeather: DailyWeather = {
-        data: dailyForecast,
-        units: data.hourly_units,
+      setForecastedWeather(() => ({
+        data: forecastWeather,
         isFetched: true,
-      };
-      setDailyWeather(() => dailyWeather);
+      }));
     }
   }, [location]);
-  console.log(dailyWeather);
+
   return (
     <>
       <Image
@@ -214,37 +220,17 @@ export default function page() {
             {getWeatherChips(weather)}
           </div>
         )}
-        {dailyWeather.isFetched && (
-          <div
-            className={`${styles.forecastWeatherTile} flex flex-center flex-column width-full`}
-          >
-            <div className="flex flex-center flex-column">
-              {dailyWeather.data.map((el: DailyWeatherData, index: number) => (
-                <span
-                  className={`${styles.daySelector}`}
-                  onClick={() => setSelectedDay(index)}
-                >
-                  {el.day}
-                </span>
-              ))}
-            </div>
-            <div className={`flex  flex-scroll-x width-full`}>
-              {dailyWeather.data[selectedDay].hourlyData.map(
-                (el: HourlyWeatherData) => {
-                  return (
-                    <HourlyWeatherChip
-                      key={el.hour}
-                      value={el.temperature}
-                      unit={dailyWeather.units.temperature_2m}
-                      time={el.hour}
-                    />
-                  );
-                }
-              )}
-            </div>
-          </div>
-        )}
       </div>
+      {forecastedWeather.isFetched && (
+        <div className={`${styles.forecastWeatherContainer} flex `}>
+          <div className={`flex flex-column flex-gap-small `}>
+            {Object.keys(forecastedWeather.data[0]).map((key: string) => {
+              return key !== "day" ? <h4>{key.toUpperCase()}</h4> : null;
+            })}
+          </div>
+          <HourlyWeatherChip data={forecastedWeather.data[selectedDay]} />
+        </div>
+      )}
     </>
   );
 }

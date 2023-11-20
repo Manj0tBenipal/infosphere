@@ -2,7 +2,6 @@
   max-width: var(--inner-el-max-width);
   padding: 1rem;
   margin: auto;
-  
 }
 .currWeatherTile {
   margin: auto;
@@ -32,4 +31,9 @@
 }
 .graphsWrapper {
   padding: 1rem;
+}
+
+.forecastWeatherContainer {
+  max-width: var(--inner-el-max-width);
+  margin: auto;
 }

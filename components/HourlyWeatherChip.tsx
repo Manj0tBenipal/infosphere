@@ -1,24 +1,21 @@
-import { HourlyWeather } from "@/public/types/Weather";
 import React from "react";
 import styles from "@/styles/weather.module.css";
+import { WeatherForecastData } from "@/public/types/Weather";
 export default function HourlyWeatherChip({
-  value,
-  unit,
-  time,
+  data,
 }: {
-  value: number;
-  unit: string;
-  time: string;
+  data: WeatherForecastData;
 }) {
-  return (
-    <div className={`${styles.weatherChip} flex  flex-center `}>
-      <span>
-        <h4>{time}</h4>
-        <h2>
-          {value}
-          <span className="description">{unit}</span>
-        </h2>
-      </span>
-    </div>
-  );
+  return data.time.map((el: string, index: number) => {
+    return (
+      <div className={` flex flex-center flex-column flex-gap-small`}>
+        <h4>{el}</h4>
+        {Object.keys(data).map((key: string) => {
+          return key === "day" || "time" ? null : (
+            <span>{data[key as keyof WeatherForecastData][index]}</span>
+          );
+        })}
+      </div>
+    );
+  });
 }
