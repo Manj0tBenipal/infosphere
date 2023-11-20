@@ -11,7 +11,7 @@ export default function HourlyWeatherChip({
     return (
       <div
         key={index}
-        className={` flex flex-center flex-column flex-gap-small`}
+        className={`${styles.hourlyWeatherChip} flex flex-center flex-column flex-gap-small`}
       >
         <h4>{el}</h4>
         {Object.keys(data).map((key: string) => {

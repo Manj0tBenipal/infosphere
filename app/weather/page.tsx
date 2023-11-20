@@ -130,6 +130,11 @@ export default function page() {
 
       setWeather(weather);
     }
+    function getWindDirection(degrees: number) {
+      const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+      const index = Math.round(degrees / 45);
+      return directions[index] || "--";
+    }
     async function getForecastWeather() {
       const hours: string[] = [];
       for (let i = 0; i < 24; i++) {
@@ -186,7 +191,9 @@ export default function page() {
           precipitation.push(data.hourly.precipitation[index]);
           visibility.push(data.hourly.visibility[index]);
           windSpeed.push(data.hourly.wind_speed_10m[index]);
-          windDirection.push(data.hourly.wind_direction_10m[index]);
+          windDirection.push(
+            getWindDirection(data.hourly.wind_direction_10m[index])
+          );
           uvIndex.push(data.hourly.uv_index[index]);
           hrs.push(el);
         });
@@ -236,14 +243,31 @@ export default function page() {
       {forecastedWeather.isFetched && (
         <div className={`${styles.forecastWeatherContainer} flex `}>
           <div className={`flex flex-column flex-gap-small `}>
+            <select
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(parseInt(e.target.value))}
+            >
+              {forecastedWeather.data.map(
+                (el: WeatherForecastData, index: number) => {
+                  return (
+                    <option key={el.day} value={index}>
+                      {el.day}
+                    </option>
+                  );
+                }
+              )}
+            </select>
             {Object.keys(forecastedWeather.data[0]).map((key: string) => {
               return key !== "day" ? (
                 <h4 key={key}>{key.toUpperCase()}</h4>
               ) : null;
             })}
           </div>
-
-          <HourlyWeatherChip data={forecastedWeather.data[selectedDay]} />
+          <div
+            className={`${styles.hourlyWeatherChipsWrapper} flex flex-center flex-gap-small flex-scroll-x`}
+          >
+            <HourlyWeatherChip data={forecastedWeather.data[selectedDay]} />
+          </div>
         </div>
       )}
     </>

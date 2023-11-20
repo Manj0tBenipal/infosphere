@@ -22,11 +22,7 @@ export interface WeatherData {
   windSpeed: WeatherProperty;
 }
 
-function setWindDirection(degrees: number) {
-  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-  const index = Math.round(degrees / 45);
-  return directions[index];
-}
+
 
 export interface WeatherForecast {
   data: WeatherForecastData[];

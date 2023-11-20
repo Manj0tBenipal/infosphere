@@ -37,3 +37,6 @@
   max-width: var(--inner-el-max-width);
   margin: auto;
 }
+.hourlyWeatherChipsWrapper {
+  background-color: white;
+}
