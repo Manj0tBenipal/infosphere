@@ -2,7 +2,7 @@ import { Service } from "@/public/types/Service";
 import styles from "@/styles/service.module.css";
 import Image from "next/image";
 import Link from "next/link";
-export default function Service({ service }: { service: Service }) {
+export default function ServiceSection({ service }: { service: Service }) {
   return (
     <div
       className={`${styles.service} flex width-full flex-column flex-center text-center flex-gap-small`}

@@ -241,9 +241,12 @@ export default function page() {
         )}
       </div>
       {forecastedWeather.isFetched && (
-        <div className={`${styles.forecastWeatherContainer} flex `}>
-          <div className={`flex flex-column flex-gap-small `}>
+        <div className={`${styles.forecastWeatherContainer} flex flex-gap-1 `}>
+          <div
+            className={`${styles.forecastWeatherHeadings} flex flex-column flex-gap-small `}
+          >
             <select
+              className={`${styles.dayTime}`}
               value={selectedDay}
               onChange={(e) => setSelectedDay(parseInt(e.target.value))}
             >
@@ -257,14 +260,16 @@ export default function page() {
                 }
               )}
             </select>
-            {Object.keys(forecastedWeather.data[0]).map((key: string) => {
-              return key !== "day" ? (
-                <h4 key={key}>{key.toUpperCase()}</h4>
-              ) : null;
-            })}
+            <div>
+              {Object.keys(forecastedWeather.data[0]).map((key: string) => {
+                if (!(key === "time" || key === "day")) {
+                  return <h4 key={key}>{key.toUpperCase()}</h4>;
+                }
+              })}
+            </div>
           </div>
           <div
-            className={`${styles.hourlyWeatherChipsWrapper} flex flex-center flex-gap-small flex-scroll-x`}
+            className={`${styles.hourlyWeatherChipsWrapper} flex  flex-gap-1 flex-scroll-x`}
           >
             <HourlyWeatherChip data={forecastedWeather.data[selectedDay]} />
           </div>

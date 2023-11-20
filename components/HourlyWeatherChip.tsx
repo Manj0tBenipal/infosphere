@@ -13,7 +13,7 @@ export default function HourlyWeatherChip({
         key={index}
         className={`${styles.hourlyWeatherChip} flex flex-center flex-column flex-gap-small`}
       >
-        <h4>{el}</h4>
+        <h4 className={`${styles.dayTime}`}>{el}</h4>
         {Object.keys(data).map((key: string) => {
           console.log(key, data[key as keyof WeatherForecastData][index]);
           if (key === "time" || key === "day") {

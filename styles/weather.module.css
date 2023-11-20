@@ -36,7 +36,42 @@
 .forecastWeatherContainer {
   max-width: var(--inner-el-max-width);
   margin: auto;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
 }
 .hourlyWeatherChipsWrapper {
-  background-color: white;
+  padding: 1rem;
+}
+.forecastWeatherContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  width: 100%;
+  min-height: 100%;
+  background: rgba(164, 55, 219, 0.1);
+}
+.forecastWeatherHeadings {
+  padding: 1rem;
+}
+.forecastWeatherHeadings select > div {
+  padding: 1rem;
+}
+.dayTime {
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background: var(--color-primary);
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+.hourlyWeatherChip {
+  background: white;
+  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  border-radius: 20px;
 }

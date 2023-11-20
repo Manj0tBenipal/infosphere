@@ -5,7 +5,7 @@ import styles from "@/styles/nav.module.css";
 export default function Navbar() {
   return (
     <nav className={` ${styles.nav}  flex flex-between`}>
-      <div className="logo">
+      <Link href={"/"} className="logo">
         <Image
           priority
           src="/logo.png"
@@ -14,7 +14,7 @@ export default function Navbar() {
           style={{ objectFit: "cover" }}
           alt="logo"
         />
-      </div>
+      </Link>
       <div className="flex-center">
         <Link className={styles.link} href="/categories">
           Weather
