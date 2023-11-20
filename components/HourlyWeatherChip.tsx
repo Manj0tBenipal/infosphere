@@ -6,6 +6,7 @@ export default function HourlyWeatherChip({
 }: {
   data: WeatherForecastData;
 }) {
+  console.log(data);
   return data.time.map((el: string, index: number) => {
     return (
       <div
@@ -14,11 +15,16 @@ export default function HourlyWeatherChip({
       >
         <h4>{el}</h4>
         {Object.keys(data).map((key: string) => {
-          return key === "day" || "time" ? null : (
-            <span key={key}>
-              {data[key as keyof WeatherForecastData][index]}
-            </span>
-          );
+          console.log(key, data[key as keyof WeatherForecastData][index]);
+          if (key === "time" || key === "day") {
+            return null;
+          } else {
+            return (
+              <span key={key}>
+                {data[key as keyof WeatherForecastData][index]}
+              </span>
+            );
+          }
         })}
       </div>
     );
