@@ -146,3 +146,16 @@ button:hover {
     font-size: 4rem;
   }
 }
+
+/* SwiperJS classes to style radio buttons */
+.swiper-pagination-bullet {
+  background-color: white !important;
+  height: 9px !important;
+  width: 9px !important;
+
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--color-secondary) !important;
+}

@@ -43,7 +43,11 @@ export default function HeadlineCarousel() {
             style={{ objectFit: "cover" }}
           />
           <div className={`${styles.headlineContent}`}>
-            <h2>{el.title}</h2>
+            <h2>
+              {el.title && el.title.length > 100
+                ? el.title.slice(0, 99) + "..."
+                : el.title}
+            </h2>
           </div>
         </Link>
       </SwiperSlide>
