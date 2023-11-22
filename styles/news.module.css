@@ -1,0 +1,43 @@
+.newsWrapper {
+  width: 100%;
+  max-width: var(--inner-el-max-width);
+  overflow: hidden;
+  margin: auto;
+}
+
+.headline {
+  color: red;
+  background-color: black;
+  position: relative;
+}
+.headlinesWrapper {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.headlineSlide {
+  position: relative;
+  height: 400px;
+  width: 100%;
+}
+.headlineContent {
+  position: absolute;
+  bottom: 2rem;
+  width: 100%;
+  left: 0;
+  color: white;
+  padding: 10px;
+  z-index: 3;
+}
+.headlineSlide::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.4);
+}

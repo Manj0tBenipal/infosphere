@@ -22,7 +22,7 @@ export default function Navbar() {
         <Link className={styles.link} href="/categories">
           Guides
         </Link>
-        <Link className={styles.link} href="/categories">
+        <Link className={styles.link} href="/news">
           News
         </Link>
       </div>

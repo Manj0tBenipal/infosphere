@@ -14,7 +14,7 @@ export async function GET(request: Request) {
    */
   if (!(id || page)) {
     const newsData = await fetch(
-      `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}`,
+      `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&image=1&language=en&size=10`,
       {
         next: {
           //Data is revalidated after every 15min
