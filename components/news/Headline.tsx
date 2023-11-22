@@ -4,6 +4,7 @@
  * This is because the SliderJS library uses window object which is not available on the server.
  *
  */
+import { FaArrowRight } from "react-icons/fa";
 import { Headline } from "@/public/types/News";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -31,30 +32,36 @@ export default function HeadlineCarousel() {
   const headlineElements = headlines.map((el: Headline) => {
     return (
       <SwiperSlide key={el.id}>
-        <Link
-          href={`/news/headlines/${el.id}`}
+        <div
           className={`${styles.headlineSlide} flex flex-column
     `}
         >
+          <Link
+            className={`btn-primary ${styles.readButton}`}
+            href={`/news/headlines/${el.id}`}
+          >
+            Read <FaArrowRight />{" "}
+          </Link>
           <Image
+            priority
             src={el.img || "/svg/newsHeadline.svg"}
             alt="headlineImage"
             fill
             style={{ objectFit: "cover" }}
           />
           <div className={`${styles.headlineContent}`}>
-            <h2>
+            <h2 style={{ fontWeight: 400 }}>
               {el.title && el.title.length > 100
                 ? el.title.slice(0, 99) + "..."
                 : el.title}
             </h2>
           </div>
-        </Link>
+        </div>
       </SwiperSlide>
     );
   });
   return (
-    <div className={`${styles.headlinesWrapper}`}>
+    <>
       {headlines.length > 0 && (
         <Swiper
           modules={[Pagination, Navigation, Autoplay]}
@@ -72,6 +79,6 @@ export default function HeadlineCarousel() {
           {headlineElements}
         </Swiper>
       )}
-    </div>
+    </>
   );
 }

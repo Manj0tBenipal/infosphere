@@ -3,3 +3,9 @@ export interface Headline {
   id: string;
   title: string;
 }
+export interface ExternalHeadline {
+  img: string;
+  url: string;
+  title: string;
+  source: string;
+}

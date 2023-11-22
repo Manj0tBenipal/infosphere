@@ -16,7 +16,13 @@
   border-radius: 20px;
   overflow: hidden;
 }
-
+.readButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  margin: 1rem;
+}
 .headlineSlide {
   position: relative;
   height: 400px;
@@ -39,6 +45,52 @@
   width: 100%;
   height: 100%;
   z-index: 2;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
+.externalHeadline > img {
+  border-radius: 20px;
+  overflow: hidden;
+}
+.externalHeadline {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 1rem;
+  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
+  background: white;
+  margin-bottom: 1rem;
+}
+.externalHeadline > h5 {
+  width: calc(100% - 2rem - 75px);
+}
+.hero {
+  height: 400px;
+  padding: 1rem;
+}
+.externalWrapper {
+  height: 100%;
+  background: var(--color-primary);
+  padding: 1rem;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.externalWrapper > h2 {
+  color: white;
+}
+.externalHeadlinesList {
+  height: calc(100% - 3rem);
+  border-radius: 20px;
+}
+
+.externalHeadlinesList::-webkit-scrollbar {
+  display: none;
+}
+.headlineSource {
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
