@@ -4,6 +4,7 @@
  * This is because the SliderJS library uses window object which is not available on the server.
  *
  */
+
 import { FaArrowRight } from "react-icons/fa";
 import { Headline } from "@/public/types/News";
 import React, { useEffect, useState } from "react";

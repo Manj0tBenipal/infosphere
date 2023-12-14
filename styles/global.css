@@ -54,6 +54,7 @@ a {
 .flex-scroll-x {
   overflow-x: scroll;
 }
+
 .primary-gradient-font {
   background: var(--linear-gradient-primary);
   -webkit-background-clip: text;

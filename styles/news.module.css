@@ -15,6 +15,7 @@
   max-width: 700px;
   border-radius: 20px;
   overflow: hidden;
+  width: calc(50% - 1rem);
 }
 .readButton {
   position: absolute;
@@ -56,30 +57,36 @@
   position: relative;
   border-radius: 20px;
   overflow: hidden;
-  padding: 1rem;
+  padding: 0.5rem;
   box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
   background: white;
-  margin-bottom: 1rem;
+
+  width: calc(50% - 0.25rem);
 }
 .externalHeadline > h5 {
   width: calc(100% - 2rem - 75px);
+  max-height: calc(100% - 1rem);
+  line-height: 2.4rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.hero {
-  height: 400px;
-  padding: 1rem;
-}
+
 .externalWrapper {
   height: 100%;
   background: var(--color-primary);
   padding: 1rem;
   border-radius: 20px;
   overflow: hidden;
+  width: calc(50% - 1rem);
+  max-height: 400px;
+  height: auto;
 }
 .externalWrapper > h2 {
   color: white;
 }
 .externalHeadlinesList {
-  height: calc(100% - 3rem);
+  max-height: calc(100% - 3rem);
   border-radius: 20px;
 }
 
@@ -93,4 +100,26 @@
   position: absolute;
   bottom: 1rem;
   right: 1rem;
+}
+
+@media screen and (max-width: 1080px) {
+  .externalHeadline {
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 720px) {
+  .hero {
+    flex-direction: column;
+    height: auto;
+  }
+  .headlinesWrapper {
+    width: 100%;
+  }
+  .externalWrapper {
+    width: 100%;
+  }
+  .externalHeadlinesList {
+    height: calc(400px - 2rem - 2rem);
+  }
 }
