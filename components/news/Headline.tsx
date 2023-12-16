@@ -22,7 +22,7 @@ export default function HeadlineCarousel() {
   const [headlines, setHeadlines] = useState<Headline[]>([] as Headline[]);
   useEffect(() => {
     async function getHeadlines() {
-      const res = await fetch(`/api/news/headlines`);
+      const res = await fetch(`/api/news/newsdata/headlines`);
       const data = await res.json();
       setHeadlines(data);
     }
@@ -39,7 +39,7 @@ export default function HeadlineCarousel() {
         >
           <Link
             className={`btn-primary ${styles.readButton}`}
-            href={`/news/headlines/${el.id}`}
+            href={`/news/newsdata/headlines/${el.id}`}
           >
             Read <FaArrowRight />{" "}
           </Link>
