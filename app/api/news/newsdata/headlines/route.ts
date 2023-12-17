@@ -17,8 +17,8 @@ export async function GET(request: Request) {
       `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&image=1&language=en&size=10`,
       {
         next: {
-          //Data is revalidated after every 15min
-          revalidate: 900,
+          //Data is revalidated after every 1hr 
+          revalidate:900,
         },
       }
     )

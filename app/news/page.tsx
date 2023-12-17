@@ -5,7 +5,7 @@ import styles from "@/styles/news.module.css";
 export default function NewsPage() {
   return (
     <div className={`${styles.newsWrapper}`}>
-      <h1 className="primary-gradient-font font2XL">Stories of the Day</h1>
+      <h1 className="primary-gradient-font font2XL">Stories of the Navjot</h1>
       <div className={`${styles.hero} flex flex-gap-1 flex-wrap`}>
         <div className={`${styles.headlinesWrapper}`}>
           <HeadlineCarousel />

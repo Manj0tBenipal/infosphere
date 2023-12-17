@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function SearchBox() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  console.log(searchKeyword)
   return (
     <div>
       <input
@@ -12,7 +13,7 @@ export default function SearchBox() {
         type="text"
         placeholder="Comma separated or a single keyword"
       />
-      <Link href={`/news/search?keyword=${searchKeyword}`}>Search</Link>
+      <Link href={`/news/search?keywords=${searchKeyword}`}>Search</Link>
     </div>
   );
 }
