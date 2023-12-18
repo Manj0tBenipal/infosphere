@@ -123,3 +123,24 @@
     height: calc(400px - 2rem - 2rem);
   }
 }
+.searchWrapper {
+  position: relative;
+  background: transparent;
+  min-width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  overflow: visible;
+}
+.searchWave {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  right: 0;
+  z-index: -1;
+  object-fit: cover;
+  height: 100%;
+}
+.searchInput {
+  width: 100%;
+  max-width: 600px;
+}

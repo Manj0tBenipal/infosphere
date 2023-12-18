@@ -5,20 +5,17 @@ import { useSearchParams } from "next/navigation";
 
 export default function SearchResults() {
   const params = useSearchParams();
-  console.log(params.get("keywords"));
 
   useEffect(() => {
     async function getSearchResults() {
       const res = await fetch(
-        `/api/news/newsdata/search?keyword=${params.get("keywords")}`,
-        {
-          next: {
-            revalidate: 10
-          }
-        }
+        `/api/news/newsdata/search?keywords=${params.get("keywords")}${
+          //Checks if user has request for nextpage
+          params.get("page") !== null ? "&page=" + params.get("page") : ""
+        }`
       );
       const data = await res.json();
-     console.log(data)
+      console.log(data);
     }
     getSearchResults();
   }, []);
