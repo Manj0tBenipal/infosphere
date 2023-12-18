@@ -1,11 +1,12 @@
 "use client";
-
-import { useEffect } from "react";
+import { Card } from "@mui/joy";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { NewsSearch } from "@/public/types/News";
 
 export default function SearchResults() {
   const params = useSearchParams();
-
+const [searchResults, setSearchResults] = useState<NewsSearch>({} as NewsSearch); 
   useEffect(() => {
     async function getSearchResults() {
       const res = await fetch(

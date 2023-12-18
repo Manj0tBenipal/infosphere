@@ -10,7 +10,7 @@ export const services: Service[] = [
     name: "Latest News",
     details: "Get latest news from various open source news APIs",
     image: "/svg/news.svg",
-    link: "/weather",
+    link: "/news",
   },
   {
     name: "Sports",

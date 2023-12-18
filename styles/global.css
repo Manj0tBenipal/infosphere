@@ -61,7 +61,6 @@ a {
   -webkit-text-fill-color: transparent;
 }
 
-
 /* .linear-gradient-font::after {
     content: "";
   box-shadow: 1px 1px 50px 10px var(--color-primary),
@@ -106,6 +105,9 @@ button:hover {
 }
 .margin-top-1 {
   margin-top: 1rem;
+}
+.btn-gradient {
+  background: var(--linear-gradient-primary);
 }
 .btn-primary {
   padding: 5px 10px;

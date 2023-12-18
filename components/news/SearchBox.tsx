@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import styles from "@/styles/news.module.css";
 import { Button, Input } from "@mui/joy";
 import { FaSearch } from "react-icons/fa";
@@ -25,11 +25,9 @@ export default function SearchBox() {
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             endDecorator={
-              <Button>
-                <Link href={`/news/search?keywords=${searchKeyword}`}>
-                  Search
-                </Link>
-              </Button>
+              <Link href={`/news/search?keywords=${searchKeyword}`}>
+                <Button className="btn-gradient">Search</Button>
+              </Link>
             }
             placeholder="Comma separated 'USA', 'Heros' or a single keyword"
             sx={{

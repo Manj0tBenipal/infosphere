@@ -10,12 +10,14 @@ export interface ExternalHeadline {
   source: string;
 }
 export interface NewsSearch {
-  newsArticles: NewsOverview;
+  newsArticles: NewsOverview[];
   nextPage: boolean;
   nextPageId: string;
 }
 export interface NewsOverview {
+  articleId: string;
   title: string;
   img: string;
+  description: string;
   category: string[];
 }
