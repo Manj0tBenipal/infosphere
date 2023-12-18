@@ -144,3 +144,8 @@
   width: 100%;
   max-width: 600px;
 }
+.newsCard {
+  display: inline-block;
+  width: calc(100% / 3 - 1rem);
+  align-self: stretch;
+}
