@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { NewsOverview, NewsSearch } from "@/public/types/News";
 import NewsCard from "@/components/news/NewsCard";
 import PageSwitchButtons from "./PageSwitchButtons";
-export const dynamic = "force-dynamic";
 export default async function SearchResults({
   searchParams,
 }: {
