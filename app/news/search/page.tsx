@@ -17,7 +17,7 @@ export default async function SearchResults({
     }`,
     {
       next: {
-        revalidate: 300,
+        revalidate: 4000,
       },
     }
   );
@@ -34,6 +34,10 @@ export default async function SearchResults({
           return <NewsCard newsArticle={article} key={article.articleId} />;
         })}
       </div>
+      {/* Suspense Boundary Prevents the entire /search route upto the nearest suspense boundary
+      be rendred on client.
+      The use od useSearchParams hook results in this behaviour.
+       */}
       <Suspense>
         <PageSwitchButtons nextPage={searchResults.nextPageId} />
       </Suspense>
