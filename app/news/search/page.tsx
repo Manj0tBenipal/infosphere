@@ -1,42 +1,32 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { NewsOverview, NewsSearch } from "@/public/types/News";
 import NewsCard from "@/components/news/NewsCard";
-import styles from "@/styles/news.module.css";
-import { Button } from "@mui/joy";
-import { FaArrowRight } from "react-icons/fa";
-import Link from "next/link";
-export default function SearchResults() {
-  const params = useSearchParams();
-  const [searchResults, setSearchResults] = useState<NewsSearch>(
-    {} as NewsSearch
-  );
-  useEffect(() => {
-    async function getSearchResults() {
-      const res = await fetch(
-        `/api/news/newsdata/search?keywords=${params.get("keywords")}${
-          //Checks if user has request for nextpage
-          params.get("page") !== null ? "&page=" + params.get("page") : ""
-        }`
-      );
-      const data = await res.json();
-      setSearchResults(data);
+import PageSwitchButtons from "./PageSwitchButtons";
+export const dynamic = "force-dynamic";
+export default async function SearchResults({
+  searchParams,
+}: {
+  searchParams: { keywords: string; page: string | undefined };
+}) {
+  const res = await fetch(
+    `${process.env.DEV_URL}/api/news/newsdata/search?keywords=${
+      searchParams.keywords
+    }${
+      //Checks if user has request for nextpage
+      searchParams?.page ? "&page=" + searchParams.page : ""
+    }`,
+    {
+      next: {
+        revalidate: 300,
+      },
     }
-    getSearchResults();
-  }, []);
-  if (!searchResults?.newsArticles) {
-    return (
-      <div className="flex flex-center flex-gap-1 flex-wrap">
-        <h1>No results found</h1>
-      </div>
-    );
-  }
+  );
+  const searchResults: NewsSearch = await res.json();
+
   return (
     <div className="flex flex-center flex-column flex-gap-1">
       <h1 className="fontXL primary-gradient-font">
-        Search Results for &quot;{params.get("keywords")}&quot;
+        Search Results for &quot;{searchParams.keywords}&quot;
       </h1>
 
       <div className="flex flex-center flex-gap-1 flex-wrap">
@@ -44,23 +34,9 @@ export default function SearchResults() {
           return <NewsCard newsArticle={article} key={article.articleId} />;
         })}
       </div>
-      {searchResults.nextPage && (
-        <div
-          className={`${styles.pageChangeButtons} flex flex-center flex-gap-1`}
-        >
-          <Link
-            href={`/news/search?keywords=${params.get("keywords")}${
-              //Checks if user has request for nextpage
-              params.get("page") !== null ? "&page=" + params.get("page") : ""
-            }`}
-          ></Link>
-          <Button className="btn-gradient flex flex-center">
-            Next Page <FaArrowRight />
-          </Button>
-        </div>
-      )}
+      <Suspense>
+        <PageSwitchButtons nextPage={searchResults.nextPageId} />
+      </Suspense>
     </div>
   );
 }
-//The further development includes having the ability to change pages. But to reduce the netork traffic
-// The data will be fetched on the server and the page will be SSR excluding the pageChange Buttons
