@@ -21,3 +21,17 @@ export interface NewsOverview {
   description: string;
   category: string[];
 }
+export default interface FullArticle {
+  articleId: string;
+  title: string;
+  link: string;
+  creator: string;
+  description: string;
+  content: string;
+  pubDate: string;
+  img: string;
+  source: string;
+  country: string[];
+  category: string[];
+  language: string;
+}

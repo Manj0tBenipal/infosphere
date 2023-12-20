@@ -4,9 +4,10 @@ import { Headline } from "@/public/types/News";
 export async function GET(request: Request) {
   //Retrieving searchParams from the URL
   const { searchParams } = new URL(request.url);
-  const { id, page } = {
+  const { id, page, full } = {
     id: searchParams.get("id"),
     page: searchParams.get("page"),
+    full: searchParams.get("full"),
   };
 
   /**
@@ -17,8 +18,8 @@ export async function GET(request: Request) {
       `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&image=1&language=en&size=10`,
       {
         next: {
-          //Data is revalidated after every 1hr 
-          revalidate:900,
+          //Data is revalidated after every 1hr
+          revalidate: 900,
         },
       }
     )

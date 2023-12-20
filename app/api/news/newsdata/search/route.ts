@@ -1,10 +1,12 @@
-import { NewsOverview, NewsSearch } from "@/public/types/News";
+import FullArticle, { NewsOverview, NewsSearch } from "@/public/types/News";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const keywords: any = url.searchParams.get("keywords");
   const page: any = url.searchParams.get("page");
+  const full: boolean =
+    (url.searchParams.get("full") === "true" ? true : false) || false;
 
   const response = await fetch(
     `https://newsdata.io/api/1/news?apikey=${
@@ -23,24 +25,45 @@ export async function GET(request: NextRequest) {
 
   const data = await response.json();
   const nextPage = data.nextPage;
-  const articles: NewsOverview[] =
+  //Response is sent when data is requestd by the route handler of full article page
+  const articles: FullArticle[] =
     data.results.length > 0
       ? data.results.map((article: any) => {
-          const articleData: NewsOverview = {
+          const articleData: FullArticle = {
             articleId: article.article_id,
             title: article.title,
             img: article.image_url,
             description: article.description,
             category: article.category,
+            country: article.country,
+            creator: article.creator,
+            content: article.content,
+            language: article.language,
+            link: article.link,
+            pubDate: article.pubDate,
+            source: article.source_id,
           };
           return articleData;
         })
-      : ([] as NewsOverview[]);
+      : ([] as FullArticle[]);
+
+  //Contains truncated data from articles to minimize the network traffic
   const result: NewsSearch = {
-    newsArticles: articles,
+    newsArticles: articles.map((article: FullArticle) => {
+      const overview = {} as NewsOverview;
+      overview.articleId = article.articleId;
+      overview.title = article.title;
+      overview.img = article.img;
+      overview.description = article.description;
+      overview.category = article.category;
+      return overview;
+    }),
     nextPage: nextPage ? true : false,
     nextPageId: nextPage,
   };
+  if (full) {
+    return Response.json(articles);
+  }
 
   return Response.json(result);
 }
