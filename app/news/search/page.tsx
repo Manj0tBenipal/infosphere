@@ -8,7 +8,7 @@ export default async function SearchResults({
   searchParams: { keywords: string; page: string | undefined };
 }) {
   const res = await fetch(
-    `${process.env.DEV_URL}/api/news/newsdata/search?keywords=${
+    `${process.env.APP_URL}/api/news/newsdata/search?keywords=${
       searchParams.keywords
     }${
       //Checks if user has request for nextpage

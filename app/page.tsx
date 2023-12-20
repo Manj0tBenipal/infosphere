@@ -40,8 +40,13 @@ export default function Page() {
           </h1>
           <p className="description text-center">
             <b>InfoSphere</b> is compeletely open source and free to use. You
-            can even contribute to the project by clicking
-            <Link href="https://github.com/Manj0tBenipal/infosphere">here</Link>
+            can even contribute to the project by clicking&nbsp;
+            <Link
+              href="https://github.com/Manj0tBenipal/infosphere"
+              style={{ color: "var(--color-primary)" }}
+            >
+              here
+            </Link>
             . The data we use is curated from public APIs.
           </p>
         </div>

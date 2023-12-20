@@ -169,3 +169,10 @@ button:hover {
 .swiper-pagination-bullet-active {
   background-color: var(--color-secondary) !important;
 }
+.ud{
+  text-align: center;
+  color: yellow;
+  background-color: black;
+  width: 100%;
+  
+}
