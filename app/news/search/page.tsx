@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { NewsOverview, NewsSearch } from "@/public/types/News";
 import NewsCard from "@/components/news/NewsCard";
 import PageSwitchButtons from "./PageSwitchButtons";
+import styles from "@/styles/news.module.css";
 export default async function SearchResults({
   searchParams,
 }: {
@@ -23,14 +24,24 @@ export default async function SearchResults({
   const searchResults: NewsSearch = await res.json();
 
   return (
-    <div className="flex flex-center flex-column flex-gap-1">
+    <div
+      className={`${styles.newsWrapper} flex flex-center flex-column flex-gap-1`}
+    >
       <h1 className="fontXL primary-gradient-font">
         Search Results for &quot;{searchParams.keywords}&quot;
       </h1>
 
       <div className="flex flex-center flex-gap-1 flex-wrap">
         {searchResults?.newsArticles?.map((article: NewsOverview) => {
-          return <NewsCard newsArticle={article} key={article.articleId} />;
+          //Page is passed to be included in the searchParams of the link to the full article replicate the URL and find it in the cache
+          return (
+            <NewsCard
+              newsArticle={article}
+              page={searchParams?.page}
+              key={article.articleId}
+              keywords={searchParams.keywords}
+            />
+          );
         })}
       </div>
       {/* Suspense Boundary Prevents the entire /search route upto the nearest suspense boundary

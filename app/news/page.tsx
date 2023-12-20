@@ -15,14 +15,6 @@ export default function NewsPage() {
         </div>
       </div>
       <SearchBox />
-      <div className={`${styles.hero} flex flex-gap-1 flex-wrap`}>
-        <div className={`${styles.headlinesWrapper}`}>
-          <HeadlineCarousel />
-        </div>
-        <div className={`${styles.externalWrapper}`}>
-          <ExternalSourcesNews />
-        </div>
-      </div>
     </div>
   );
 }
