@@ -16,10 +16,10 @@ export default function Navbar() {
         />
       </Link>
       <div className="flex-center">
-        <Link className={styles.link} href="/categories">
+        <Link className={styles.link} href="/weather">
           Weather
         </Link>
-        <Link className={styles.link} href="/categories">
+        <Link className={styles.link} href="/guides">
           Guides
         </Link>
         <Link className={styles.link} href="/news">
