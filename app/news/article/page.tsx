@@ -43,7 +43,7 @@ export default async function page({
     }
   }
   //Adding the remaining lines as a paragraph
-  paras.push(lines.slice(coveredTillLine, lines.length).join(". "));
+  paras.push(lines.slice(coveredTillLine).join(". "));
 
   if (!data.found) return <h1>The article has been moved or is deleted</h1>;
   return (
@@ -66,7 +66,7 @@ export default async function page({
           :
           {paras.map((para: string, i: number) => (
             <p className={`${styles.newsPara}`} key={i}>
-              {para}
+              {para}.
             </p>
           ))}
         </span>

@@ -154,6 +154,8 @@
   width: 80%;
   display: block;
   margin: auto;
+  max-height: 400px;
+  object-fit: cover;
 }
 .article {
   width: 100%;

@@ -1,6 +1,6 @@
 "use client";
 /**
- * Since this component uses SliderJS, it is not SSR compatible.
+ * Since this component uses SwiperJS, it is not SSR compatible.
  * This is because the SliderJS library uses window object which is not available on the server.
  *
  */
@@ -39,9 +39,9 @@ export default function HeadlineCarousel() {
         >
           <Link
             className={`btn-primary ${styles.readButton}`}
-            href={`/news/newsdata/headlines/${el.id}`}
+            href={`/news/article?ref=headlines&articleId=${el.id}`}
           >
-            Read <FaArrowRight />{" "}
+            Read <FaArrowRight />
           </Link>
           <Image
             priority

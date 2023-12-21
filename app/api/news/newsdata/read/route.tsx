@@ -25,19 +25,15 @@ export async function GET(request: Request) {
   } else if (params.ref === "headlines") {
     url += "headlines";
   }
-  url += "&full=true";
-
+  url += `${params.ref === "search" ? "&" : "?"}full=true`;
   const res = await fetch(url, { next: { revalidate: 4000 } });
   const data = await res.json();
-
   const articleIndex =
     data?.length > 0
       ? data.findIndex((article: any) => {
-          console.log(params.articleId, article.articleId);
           return params.articleId === article.articleId;
         })
       : -1;
-  console.log(articleIndex);
   if (articleIndex === -1) return Response.json({ found: false });
   else {
     return Response.json({

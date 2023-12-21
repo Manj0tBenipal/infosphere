@@ -1,4 +1,4 @@
-import { ExternalHeadline, Headline } from "@/public/types/News";
+import { ExternalHeadline } from "@/public/types/News";
 import styles from "@/styles/news.module.css";
 import Image from "next/image";
 import Link from "next/link";

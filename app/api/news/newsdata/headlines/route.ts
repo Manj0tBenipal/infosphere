@@ -1,54 +1,56 @@
-import { Headline } from "@/public/types/News";
+import FullArticle, { Headline } from "@/public/types/News";
 
 //   Data is used in the Carousel Component of news page
 export async function GET(request: Request) {
   //Retrieving searchParams from the URL
   const { searchParams } = new URL(request.url);
-  const { id, page, full } = {
-    id: searchParams.get("id"),
-    page: searchParams.get("page"),
-    full: searchParams.get("full"),
-  };
 
   /**
    * returns general headlines when there is no searchParam in the URL
    */
-  if (!(id || page)) {
-    const newsData = await fetch(
-      `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&image=1&language=en&size=10`,
-      {
-        next: {
-          //Data is revalidated after every 1hr
-          revalidate: 900,
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        return data;
-      });
-    const headlines = await newsData.results.map((el: any) => {
-      const headline: Headline = {
-        id: el.article_id,
-        img: el.image_url || null,
-        title: el.title || null,
-      };
-      return headline;
-    });
-    return Response.json(headlines);
-  }
+
+  const res = await fetch(
+    `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&image=1&language=en&size=10`,
+    {
+      next: {
+        //Data is revalidated after every 1hr
+        revalidate: 4000,
+      },
+    }
+  );
+  const data = await res.json();
+  //Response is sent when data is requestd by the route handler of full article page
+  //Since the request is chached only a single API call is made to serve the data to carousel and article page
+  const headlines: FullArticle[] =
+    data?.results?.length > 0
+      ? data.results.map((article: any) => {
+          const headline: FullArticle = {
+            articleId: article.article_id,
+            title: article.title,
+            img: article.image_url,
+            description: article.description,
+            category: article.category,
+            country: article.country,
+            creator: article.creator,
+            content: article.content,
+            language: article.language,
+            link: article.link,
+            pubDate: article.pubDate,
+            source: article.source_id,
+          };
+          return headline;
+        })
+      : [];
+  //A short overview of the headlines to display in the carousel
+  //This is done to minimize the network traffic
+  const headlinesOverview: Headline[] = headlines.map((el: any) => {
+    const headline: Headline = {
+      id: el.articleId,
+      img: el.img,
+      title: el.title,
+    };
+    return headline;
+  });
+  if (searchParams.get("full") === "true") return Response.json(headlines);
+  return Response.json(headlinesOverview);
 }
-//   const gNews = await fetch(
-//     `https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=10&apikey=${process.env.GNEWS_API_KEY}`
-//   )
-//     .then((res) => res.json())
-//     .then((data) => {
-//       return data;
-//     });
-//   const mediaStack = await fetch(
-//     `http://api.mediastack.com/v1/news?access_key=${process.env.MEDIA_STACK_API_KEY}&sources=business,-sports`
-//   )
-//     .then((res) => res.json())
-//     .then((data) => {
-//       return data;
-//     });
