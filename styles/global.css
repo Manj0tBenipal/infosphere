@@ -90,6 +90,9 @@ a {
 .flex-gap-1 {
   gap: 1rem;
 }
+.flex-gap-2 {
+  gap: 2rem;
+}
 .flex-gap-small {
   gap: 0.5rem;
 }
@@ -169,10 +172,9 @@ button:hover {
 .swiper-pagination-bullet-active {
   background-color: var(--color-secondary) !important;
 }
-.ud{
+.ud {
   text-align: center;
   color: yellow;
   background-color: black;
   width: 100%;
-  
 }

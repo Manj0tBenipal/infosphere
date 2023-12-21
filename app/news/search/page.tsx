@@ -37,9 +37,10 @@ export default async function SearchResults({
           return (
             <NewsCard
               newsArticle={article}
-              page={searchParams?.page}
+              page={searchParams?.page || null}
               key={article.articleId}
               keywords={searchParams.keywords}
+              parent="search"
             />
           );
         })}
