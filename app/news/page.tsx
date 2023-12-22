@@ -22,7 +22,9 @@ export default async function NewsPage() {
         </div>
       </div>
       <SearchBox />
-      <div className="flex flex-center flex-column flex-gap-1">
+      {trendingArticles?.length >0 &&
+
+        <div className="flex flex-center flex-column flex-gap-1">
         <h2
           className="fontL primary-gradient-font"
           style={{ textAlign: "left", width: "100%" }}
@@ -32,15 +34,16 @@ export default async function NewsPage() {
         <div className="flex flex-center flex-wrap flex-gap-small">
           {trendingArticles?.map((article: NewsOverview) => (
             <NewsCard
-              key={article.articleId}
+            key={article.articleId}
               parent="landing"
               newsArticle={article}
               page={null}
               keywords={null}
-            />
-          ))}
+              />
+              ))}
         </div>
       </div>
+            }
     </div>
   );
 }
