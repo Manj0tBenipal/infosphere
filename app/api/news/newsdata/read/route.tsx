@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     url += "headlines";
   }
   url += `${params.ref === "search" ? "&" : "?"}full=true`;
-  const res = await fetch(url, { next: { revalidate: 4000 } });
+  const res = await fetch(url, { next: { revalidate: 10000 } });
   const data = await res.json();
   const articleIndex =
     data?.length > 0
