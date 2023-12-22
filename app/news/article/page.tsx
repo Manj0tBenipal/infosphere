@@ -28,9 +28,11 @@ export default async function page({
   url += `&articleId=${searchParams.articleId}`;
   const res = await fetch(url, { next: { revalidate: 0 } });
   const data = await res.json();
+
   const article = data.data as FullArticle;
+ 
   //Splitting the paragraph returned by API into lines
-  const lines: string[] = article.content.split(".");
+  const lines: string[] = article?.content.split(".");
   //Keeping tracks of lines joined into paragraphs
   let coveredTillLine = 0;
   //Generating a paragraph from every 4 lines
