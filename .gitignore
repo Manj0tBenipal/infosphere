@@ -37,3 +37,6 @@ next-env.d.ts
 
 #deploy script
 /*.sh
+
+#deploy scripts
+/*.sh

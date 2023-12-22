@@ -4,19 +4,23 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const country: string = searchParams.get("country") || "us";
   const res = await fetch(
-    `https://newsapi.org/v2/top-headlines?country=${country}&apiKey=${process.env.NEWSAPI_API_KEY}`
+    `http://api.mediastack.com/v1/news?access_key=${process.env.MEDIASTACK_API_KEY}&categories=general&languages=en`,
+
+    { next: { revalidate: 4000 } }
   );
   const data = await res.json();
-  if (data.status === "ok") {
+  console.info("INFO: Fetching Data for Trending...");
+  console.info(data);
+  if (!data?.error) {
     const headlines: NewsOverview[] =
-      data.articles.length > 0
-        ? data.articles.map((article: any) => {
+      data.data.length > 0
+        ? data.data.map((article: any) => {
             const articleData: NewsOverview = {
               articleId: article.url,
               title: article.title,
-              img: article.urlToImage,
+              img: article.image,
               description: article.description,
-              category: article.source.name,
+              category: article.source,
             };
             return articleData;
           })
