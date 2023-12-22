@@ -6,11 +6,10 @@ export async function GET(request: Request) {
   const res = await fetch(
     `http://api.mediastack.com/v1/news?access_key=${process.env.MEDIASTACK_API_KEY}&categories=general&languages=en`,
 
-    { next: { revalidate: 4000 } }
+    { next: { revalidate: 0 } }
   );
   const data = await res.json();
   console.info("INFO: Fetching Data for Trending...");
-  console.info(data);
   if (!data?.error) {
     const headlines: NewsOverview[] =
       data.data.length > 0
@@ -25,8 +24,11 @@ export async function GET(request: Request) {
             return articleData;
           })
         : ([] as NewsOverview[]);
+    console.info("INFO: Returning Data for Trending...");
+    console.log(headlines);
     return Response.json(headlines);
   } else {
+    console.info("INFO: Returning empty array for Trending...");
     return Response.json([]);
   }
 }
