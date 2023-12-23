@@ -4,6 +4,7 @@ import Service from "@/components/Service";
 import WaveSVG from "./WaveSVG";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@mui/joy";
 export default function Page() {
   return (
     <main className={styles.main}>
@@ -19,7 +20,7 @@ export default function Page() {
           <h3 className="description">
             Start browsing the Information we offer
           </h3>
-          <button className="btn-dark margin-top-1">Get Started</button>
+          <Button className="btn-dark margin-top-1">Get Started</Button>
         </div>
 
         <WaveSVG className={styles.wave} />
