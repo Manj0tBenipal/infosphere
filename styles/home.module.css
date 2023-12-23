@@ -1,23 +1,26 @@
-.hero::after {
+
+.cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -3;
+}
+.cover::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -2;
+  z-index: 0;
   width: 100%;
   min-height: 100%;
   background: rgba(255, 255, 255, 0.685);
   backdrop-filter: blur(2px);
 }
-.cover {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
+.cover img {
   z-index: -2;
 }
-
 .hero {
   min-height: 100vh;
   background: transparent;

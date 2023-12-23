@@ -22,37 +22,51 @@ export default function Page() {
           </h3>
           <Button className="btn-dark margin-top-1">Get Started</Button>
         </div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 100% 100%"
-          style={{
-            position: "absolute",
-            bottom: 0,
-            width: "100%",
-            height: "20%",
-            zIndex: -2,
-          }}
-        >
-          <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style={{ stopColor: "rgb(164, 55, 219)" }} />
-              <stop offset="100%" style={{ stopColor: "rgb(255, 11, 255)" }} />
-            </linearGradient>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#gradient)" />
-
-          <line
-            x1="0"
-            y1="50%"
-            x2="100%"
-            y2="5%"
-            stroke="white"
-            stroke-width="5%"
+        <div className={styles.cover}>
+          <Image
+            priority
+            src={"/svg/home/stripes.svg"}
+            fill
+            alt="hero"
+            style={{ objectFit: "cover" }}
           />
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 100% 100%"
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              height: "20%",
+              zIndex: -1,
+            }}
+          >
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{ stopColor: "rgb(164, 55, 219)" }} />
+                <stop
+                  offset="100%"
+                  style={{ stopColor: "rgb(255, 11, 255)" }}
+                />
+              </linearGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#gradient)" />
+
+            <line
+              x1="0"
+              y1="50%"
+              x2="100%"
+              y2="5%"
+              stroke="white"
+              stroke-width="5%"
+            />
+          </svg>
+        </div>
       </div>
 
-      <div className={`${styles.services} flex flex-column flex-gap-1 flex-center`}>
+      <div
+        className={`${styles.services} flex flex-column flex-gap-1 flex-center`}
+      >
         <h1 className="fontL text-center primary-gradient-font">Services</h1>
         <div className={`flex flex-center flex-wrap flex-gap-small `}>
           {services.map((service) => (

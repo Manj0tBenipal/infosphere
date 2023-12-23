@@ -15,14 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <Image
-          className={styles.cover}
-          priority
-          src={"/svg/home/stripes.svg"}
-          fill
-          alt="hero"
-          style={{ objectFit: "cover" }}
-        />
+       
+
         <p className="ud">
           <IoMdWarning />
           This Project is still in Development

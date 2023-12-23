@@ -25,7 +25,7 @@ export default async function NewsPage() {
 
   console.log(trendingArticles);
   return (
-    <div className={`${styles.newsWrapper} flex flex-gap-2 flex-column`}>
+    <div className={`${styles.newsWrapper} flex flex-gap-2 flex-column `}>
       <h1 className="primary-gradient-font fontXL">Stories of the Day</h1>
       <div className={`${styles.hero} flex flex-gap-1 flex-wrap`}>
         <div className={`${styles.headlinesWrapper}`}>

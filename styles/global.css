@@ -70,7 +70,12 @@ a {
   box-shadow: 1px 1px 50px 10px var(--color-primary),
     -1px -1px 50px 10px var(--color-secondary);
 } */
-
+.background-dark {
+  background-color: #000000;
+}
+.background-light {
+  background-color: #ffffff;
+}
 .width-full {
   width: 100%;
 }
