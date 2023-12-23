@@ -1,14 +1,15 @@
 import styles from "@/styles/home.module.css";
 import { services } from "@/public/data/services";
 import Service from "@/components/Service";
-import WaveSVG from "./WaveSVG";
+
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@mui/joy";
 export default function Page() {
   return (
     <main className={styles.main}>
-      <div className={`${styles.hero} flex flex-column `}>
-        <div className={`   width-full text-center ${styles.motto}`}>
+      <div className={`${styles.hero} flex flex-column flex-center`}>
+        <div className={`  width-full text-center ${styles.motto}`}>
           <h1 className="font2XL">Your One Stop Station for all </h1>
           <h1 className="font2XL">
             <span className="primary-gradient-font ">Information </span>
@@ -19,15 +20,55 @@ export default function Page() {
           <h3 className="description">
             Start browsing the Information we offer
           </h3>
-          <button className="btn-dark margin-top-1">Get Started</button>
+          <Button className="btn-dark margin-top-1">Get Started</Button>
         </div>
+        <div className={styles.cover}>
+          <Image
+            priority
+            src={"/svg/home/stripes.svg"}
+            fill
+            alt="hero"
+            style={{ objectFit: "cover" }}
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 100% 100%"
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              height: "20%",
+              zIndex: -1,
+            }}
+          >
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{ stopColor: "rgb(164, 55, 219)" }} />
+                <stop
+                  offset="100%"
+                  style={{ stopColor: "rgb(255, 11, 255)" }}
+                />
+              </linearGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#gradient)" />
 
-        <WaveSVG className={styles.wave} />
+            <line
+              x1="0"
+              y1="50%"
+              x2="100%"
+              y2="5%"
+              stroke="white"
+              stroke-width="5%"
+            />
+          </svg>
+        </div>
       </div>
-      <div className={`${styles.services}`}>
-        <WaveSVG className={styles.invertedWave} />
-        <h1 className="fontL text-center text-light">Services</h1>
-        <div className={`flex flex-center  ${styles.wrapper}`}>
+
+      <div
+        className={`${styles.services} flex flex-column flex-gap-1 flex-center`}
+      >
+        <h1 className="fontL text-center primary-gradient-font">Services</h1>
+        <div className={`flex flex-center flex-wrap flex-gap-small `}>
           {services.map((service) => (
             <Service key={service.name} service={service} />
           ))}

@@ -5,7 +5,8 @@ import "@fontsource/roboto/700.css";
 import { IoMdWarning } from "react-icons/io";
 import Navbar from "@/components/Navbar";
 import "@/styles/global.css";
-
+import Image from "next/image";
+import styles from "@/styles/home.module.css";
 export default function RootLayout({
   children,
 }: {
@@ -13,6 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </head>
       <body suppressHydrationWarning={true}>
         <p className="ud">
           <IoMdWarning />

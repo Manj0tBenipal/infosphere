@@ -1,31 +1,56 @@
-import Image from "next/image";
+"use client";
 import Link from "next/link";
 import React from "react";
 import styles from "@/styles/nav.module.css";
+import { FaBars } from "react-icons/fa";
+import { RxCross1 } from "react-icons/rx";
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  console.log(menuOpen);
   return (
-    <nav className={` ${styles.nav}  flex flex-between`}>
-      <Link href={"/"} className="logo">
-        <Image
-          priority
-          src="/logo.png"
-          width={65}
-          height={65}
-          style={{ objectFit: "cover" }}
-          alt="logo"
-        />
-      </Link>
-      <div className="flex-center">
-        <Link className={styles.link} href="/weather">
-          Weather
-        </Link>
-        <Link className={styles.link} href="/guides">
-          Guides
-        </Link>
-        <Link className={styles.link} href="/news">
-          News
-        </Link>
-      </div>
-    </nav>
+    <>
+      <button
+        onClick={() => {
+          setMenuOpen(true);
+        }}
+      >
+        <FaBars className={styles.bars} size={32} />
+      </button>
+      <nav
+        className={`${styles.nav}`}
+        style={{ right: `${menuOpen ? "0%" : "-100%"}` }}
+      >
+        <div
+          className={`${styles.navList} flex flex-center flex-column flex-gap-1`}
+        >
+          <RxCross1
+            size={32}
+            className={styles.cross}
+            onClick={() => setMenuOpen(false)}
+          />
+          <Link
+            className={styles.link}
+            href="/weather"
+            onClick={() => setMenuOpen(false)}
+          >
+            Weather
+          </Link>
+          <Link
+            className={styles.link}
+            href="/guides"
+            onClick={() => setMenuOpen(false)}
+          >
+            Guides
+          </Link>
+          <Link
+            className={styles.link}
+            href="/news"
+            onClick={() => setMenuOpen(false)}
+          >
+            News
+          </Link>
+        </div>
+      </nav>
+    </>
   );
 }
