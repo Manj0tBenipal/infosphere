@@ -220,7 +220,7 @@ export default function Page() {
   console.log(forecastedWeather.isFetched && forecastedWeather.data[0]);
 
   return (
-    <>
+    <div style={{ height: "100vh" }}>
       <Image
         fill
         priority
@@ -274,6 +274,6 @@ export default function Page() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
