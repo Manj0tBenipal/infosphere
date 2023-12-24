@@ -1,7 +1,6 @@
 .service {
   width: 100%;
   max-width: 440px;
-  margin-inline: auto;
   border-radius: 20px;
   background: white;
   /* background: transparent; */

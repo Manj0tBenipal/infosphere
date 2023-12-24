@@ -5,6 +5,7 @@ import Service from "@/components/home/Service";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@mui/joy";
+import Credits from "@/components/home/Credits";
 export default function Page() {
   return (
     <main className={styles.main}>
@@ -63,7 +64,6 @@ export default function Page() {
           </svg>
         </div>
       </div>
-
       <div
         className={`${styles.services} flex flex-column flex-gap-1 flex-center`}
       >
@@ -74,30 +74,42 @@ export default function Page() {
           ))}
         </div>
       </div>
-      <div className={`${styles.about} flex flex-center flex-between`}>
-        <div className={`${styles.aboutContent} flex flex-column flex-center`}>
-          <h1 className="fontL text-center primary-gradient-font">
-            Open Source
-          </h1>
-          <p className="description text-center">
-            <b>InfoSphere</b> is compeletely open source and free to use. You
-            can even contribute to the project by clicking&nbsp;
-            <Link
-              href="https://github.com/Manj0tBenipal/infosphere"
-              style={{ color: "var(--color-primary)" }}
-            >
-              here
-            </Link>
-            . The data we use is curated from public APIs.
-          </p>
+      <div className={`${styles.about} flex flex-center flex-column`}>
+        <h1 className="fontL text-center primary-gradient-font">Open Source</h1>
+        <div className="flex flex-center flex-between">
+          <div
+            className={`${styles.aboutContent} flex flex-column flex-center flex-gap-1`}
+          >
+            <p className="description text-center">
+              <b>InfoSphere</b> is compeletely open source and free to use. You
+              can even contribute to the project by clicking&nbsp;
+              <Link
+                href="https://github.com/Manj0tBenipal/infosphere"
+                style={{ color: "var(--color-primary)" }}
+              >
+                here
+              </Link>
+              . The data we use is curated from public APIs.
+            </p>
+          </div>
+
+          <Image
+            priority
+            className={styles.aboutCover}
+            src="/svg/opensource.svg"
+            height={400}
+            width={400}
+            alt="opensource"
+          />
         </div>
-        <Image
-          priority
-          src="/svg/opensource.svg"
-          height={400}
-          width={400}
-          alt="opensource"
-        />
+      </div>
+      <div className="flex flex-center flex-column flex-gap-1">
+        <h1 className="primary-gradient-font fontXL">Credits</h1>
+        <p className="description text-center">
+          This Project has been made possible due to the availability of these
+          publicly available sources.
+        </p>
+        <Credits />
       </div>
     </main>
   );
