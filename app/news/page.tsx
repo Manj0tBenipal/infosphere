@@ -12,7 +12,6 @@ import styles from "@/styles/news.module.css";
 
 export const dynamic = "force-dynamic";
 export default async function NewsPage() {
-  console.info("PAGE: Fetching trending articles");
 
   const trendingArticlesRes = await fetch(
     `${process.env.APP_URL}/api/news/mediastack/trending`,
@@ -23,7 +22,7 @@ export default async function NewsPage() {
     return [];
   });
 
-  console.log(trendingArticles);
+
   return (
     <div className={`${styles.newsWrapper} flex flex-gap-2 flex-column `}>
       <h1 className="primary-gradient-font fontXL">Stories of the Day</h1>
