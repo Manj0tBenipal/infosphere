@@ -9,6 +9,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const path = usePathname();
   console.log(path);
+  function isActive(currPath: string) {
+    return path === currPath ? "active" : null;
+  }
   return (
     <>
       <button
@@ -31,28 +34,28 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
           />
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/")}`}
             href="/"
             onClick={() => setMenuOpen(false)}
           >
             Home
           </Link>
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/weather")}`}
             href="/weather"
             onClick={() => setMenuOpen(false)}
           >
             Weather
           </Link>
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/guides")}`}
             href="/guides"
             onClick={() => setMenuOpen(false)}
           >
             Guides
           </Link>
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/news")}`}
             href="/news"
             onClick={() => setMenuOpen(false)}
           >

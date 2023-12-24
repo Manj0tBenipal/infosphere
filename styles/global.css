@@ -158,7 +158,10 @@ button:hover {
 .text-light {
   color: white;
 }
-
+.active {
+  color: black;
+  transform: scale(1.02);
+}
 @media screen and (min-width: 1440px) {
   .fontL {
     font-size: 2.5rem;
