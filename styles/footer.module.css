@@ -1,0 +1,22 @@
+.container {
+  position: relative;
+  min-height:300px;
+  height: auto;
+  background: transparent;
+  overflow: visible;
+  z-index: 1;
+  color: white;
+}
+
+
+
+
+.wave {
+  position: absolute;
+  top: -30%;
+  height: 130%;
+  width: 100%;
+  left: 0;
+  object-fit: cover;
+  z-index: -1;
+}
