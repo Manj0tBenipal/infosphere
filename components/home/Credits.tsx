@@ -9,7 +9,7 @@ export default function Credits() {
       {credits.map((credit: CreditHolder) => {
         return (
           <div
-            className={`${styles.creditHolderCard} flex flex-center flex-column`}
+            key={credit.name} className={`${styles.creditHolderCard} flex flex-center flex-column`}
           >
             {credit.img ?(
               <Image src={credit.img} width={150} height={150} alt="logo" />):
