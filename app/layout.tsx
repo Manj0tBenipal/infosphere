@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import "@/styles/global.css";
 import Image from "next/image";
 import styles from "@/styles/home.module.css";
+import Footer from "@/components/news/Footer";
 export default function RootLayout({
   children,
 }: {
@@ -27,6 +28,7 @@ export default function RootLayout({
         </p>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

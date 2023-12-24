@@ -4,9 +4,14 @@ import React from "react";
 import styles from "@/styles/nav.module.css";
 import { FaBars } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
+import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  console.log(menuOpen);
+  const path = usePathname();
+  console.log(path);
+  function isActive(currPath: string) {
+    return path === currPath ? "active" : null;
+  }
   return (
     <>
       <button
@@ -18,7 +23,7 @@ export default function Navbar() {
       </button>
       <nav
         className={`${styles.nav}`}
-        style={{ right: `${menuOpen ? "0%" : "-100%"}` }}
+        style={{ transform: `translateX(${menuOpen ? "0%" : "-100%"})` }}
       >
         <div
           className={`${styles.navList} flex flex-center flex-column flex-gap-1`}
@@ -29,21 +34,28 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
           />
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/")}`}
+            href="/"
+            onClick={() => setMenuOpen(false)}
+          >
+            Home
+          </Link>
+          <Link
+            className={`${styles.link} ${isActive("/weather")}`}
             href="/weather"
             onClick={() => setMenuOpen(false)}
           >
             Weather
           </Link>
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/guides")}`}
             href="/guides"
             onClick={() => setMenuOpen(false)}
           >
             Guides
           </Link>
           <Link
-            className={styles.link}
+            className={`${styles.link} ${isActive("/news")}`}
             href="/news"
             onClick={() => setMenuOpen(false)}
           >

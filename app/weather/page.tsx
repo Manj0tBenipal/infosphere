@@ -8,10 +8,10 @@ import {
   WeatherForecast,
   WeatherForecastData,
 } from "@/public/types/Weather";
-import WeatherChip from "@/components/WeatherChip";
+import WeatherChip from "@/components/weather/WeatherChip";
 import Image from "next/image";
 
-import HourlyWeatherChip from "@/components/HourlyWeatherChip";
+import HourlyWeatherChip from "@/components/weather/HourlyWeatherChip";
 export default function Page() {
   const [location, setLocation] = useState<Location>({
     latitude: "",
@@ -220,7 +220,7 @@ export default function Page() {
   console.log(forecastedWeather.isFetched && forecastedWeather.data[0]);
 
   return (
-    <>
+    <div style={{ height: "100vh" }}>
       <Image
         fill
         priority
@@ -274,6 +274,6 @@ export default function Page() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

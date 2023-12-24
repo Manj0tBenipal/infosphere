@@ -1,6 +1,6 @@
 import styles from "@/styles/home.module.css";
 import { services } from "@/public/data/services";
-import Service from "@/components/Service";
+import Service from "@/components/home/Service";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -68,7 +68,7 @@ export default function Page() {
         className={`${styles.services} flex flex-column flex-gap-1 flex-center`}
       >
         <h1 className="fontL text-center primary-gradient-font">Services</h1>
-        <div className={`flex flex-center flex-wrap flex-gap-small `}>
+        <div className={`flex flex-center flex-wrap flex-gap-1 `}>
           {services.map((service) => (
             <Service key={service.name} service={service} />
           ))}
