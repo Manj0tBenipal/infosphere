@@ -4,9 +4,11 @@ import React from "react";
 import styles from "@/styles/nav.module.css";
 import { FaBars } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
+import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  console.log(menuOpen);
+  const path = usePathname();
+  console.log(path);
   return (
     <>
       <button
@@ -18,7 +20,7 @@ export default function Navbar() {
       </button>
       <nav
         className={`${styles.nav}`}
-        style={{ right: `${menuOpen ? "0%" : "-100%"}` }}
+        style={{ transform: `translateX(${menuOpen ? "0%" : "-100%"})` }}
       >
         <div
           className={`${styles.navList} flex flex-center flex-column flex-gap-1`}
@@ -28,6 +30,13 @@ export default function Navbar() {
             className={styles.cross}
             onClick={() => setMenuOpen(false)}
           />
+          <Link
+            className={styles.link}
+            href="/"
+            onClick={() => setMenuOpen(false)}
+          >
+            Home
+          </Link>
           <Link
             className={styles.link}
             href="/weather"
