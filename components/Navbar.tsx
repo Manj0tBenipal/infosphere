@@ -5,7 +5,10 @@ import styles from "@/styles/nav.module.css";
 import { FaBars } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 export default function Navbar() {
+  const session = useSession();
+  console.log(session);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const path = usePathname();
   function isActive(currPath: string) {
