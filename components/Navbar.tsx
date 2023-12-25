@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const path = usePathname();
-  console.log(path);
   function isActive(currPath: string) {
     return path === currPath ? "active" : null;
   }
