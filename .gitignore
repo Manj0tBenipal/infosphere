@@ -42,3 +42,5 @@ next-env.d.ts
 
 *.sh
 .env
+firebaseadminkey.json
+key.json

@@ -2,13 +2,15 @@
 import Link from "next/link";
 import React from "react";
 import styles from "@/styles/nav.module.css";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaUpload } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { database } from "firebase-admin";
+import Image from "next/image";
 export default function Navbar() {
-  const session = useSession();
-  console.log(session);
+  const { data, status } = useSession();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const path = usePathname();
   function isActive(currPath: string) {
@@ -16,12 +18,36 @@ export default function Navbar() {
   }
   return (
     <>
+      <button className="btn-dark">
+        {status === "authenticated" ? (
+          <Link href="/api/auth/signout">Sign Out</Link>
+        ) : (
+          <Link href="/api/auth/signin">Sign In</Link>
+        )}
+      </button>
       <button
         onClick={() => {
           setMenuOpen(true);
         }}
       >
-        <FaBars className={styles.bars} size={32} />
+        {status === "authenticated" ? (
+          <Image
+            priority
+            quality={100}
+            className={styles.bars}
+            src={
+              data.user?.image ||
+              "https://lh3.googleusercontent.com/a/ACg8ocL-g6p5_r6mxg9sydDyO-VIUKZruaJAgXikciMZC32Gq9E=s360-c-no"
+            }
+            height={32}
+            width={32}
+            alt="avatar"
+          />
+        ) : status === "loading" ? (
+          <FaUpload className={styles.bars} size={32} />
+        ) : (
+          <FaBars className={styles.bars} size={32} />
+        )}
       </button>
       <nav
         className={`${styles.nav}`}
