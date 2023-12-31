@@ -1,9 +1,9 @@
 export interface Guide {
   title: string;
   content: string;
-  date: Date;
-  author: User;
-  source: Source | null;
+  date: string;
+  userId: string;
+  source: Source[] | null;
 }
 export interface User {
   userId: string;

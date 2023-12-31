@@ -1,6 +1,7 @@
 .container {
+  margin-top: 150px;
   position: relative;
-  min-height:300px;
+  min-height: 300px;
   height: auto;
   background: transparent;
   overflow: visible;
