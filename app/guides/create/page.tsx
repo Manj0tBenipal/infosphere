@@ -21,7 +21,7 @@ export default function page() {
   //Data of the guide
   const [articleData, setArticleData] = useState<Guide>({
     userId: data.user?.email,
-    date: new Date().toUTCString(),
+   
     content: "",
     title: "",
   } as Guide);
@@ -99,7 +99,7 @@ export default function page() {
       clearInterval(interval);
       clearTimeout(debounceTimeoutInstance);
     };
-  }, [articleData.content]);
+  }, [articleData.content, articleData.title]);
 
   return (
     <main

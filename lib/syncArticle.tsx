@@ -20,6 +20,7 @@ export async function syncData(data: Guide, docId: string | null) {
       docRef,
       {
         ...data,
+        date: new Date().toUTCString(),
       },
       { merge: true }
     );
