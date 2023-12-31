@@ -4,13 +4,12 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Editor as TinyMCEEditor } from "tinymce";
 import { useRef, useState, useEffect } from "react";
 import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import FormHelperText from "@mui/joy/FormHelperText";
+
 import Input from "@mui/joy/Input";
 import { syncData } from "@/lib/syncArticle";
 import { Guide } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 export default function page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
   const { data, status } = useSession();
@@ -18,6 +17,7 @@ export default function page() {
     return redirect("/api/auth/signin");
   }
   // ------ This code gets executed only if the user is logged in --------- //
+  const searchParams = useSearchParams();
   //Data of the guide
   const [articleData, setArticleData] = useState<Guide>({
     userId: data.user?.email,
@@ -52,87 +52,124 @@ export default function page() {
    *
    */
   function saveData() {
-    if (editorRef.current) {
-      const editorText = editorRef.current.getContent().toString() || "";
-      console.log(editorText);
-      if (getHash(editorText) === getHash(articleData.content)) {
-        return;
-      } else {
-        setArticleData((prev) => {
-          return {
-            title: prev.title,
-            content: editorText.toString(),
-          } as Guide;
-        });
-      }
-    }
+    console.log("Data updated", articleData);
   }
+  useEffect(() => {
+    return () => {
+      //in case the Component gets Unmounted the most recent changes are synced with database
+      syncData(articleData, searchParams.get("aID") || null);
+
+      //Clearing the editor reference to prevent memoryleaks
+      editorRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
-    //Syncs the content of text editor with the state only when required
+    /**
+     * This function adds the behavior of one way data-binding from the component to the state
+     * Helps Implement debouncing while automatically  syncing data with the database
+     */
+    const interval = setInterval(() => {
+      if (editorRef.current) {
+        const content = editorRef.current.getContent();
+        // Check if the content has really changed
+        if (getHash(content) !== getHash(articleData.content)) {
+          setArticleData((prev) => ({
+            ...prev,
+            content,
+          }));
+        }
+      }
+    }, 1000);
+    /**
+     * Debounced Updates to Database
+     *
+     * If the state is unchanged for 4 seconds the data is pushed to the database
+     *
+     * The function is not executed if:
+     * 1. The articleData keeps changing at a frequency of every 4 seconds or less
+     * 2. The data reamains unchanged after the most recent push to the database
+     */
+    const debounceTimeoutInstance = setTimeout(
+      () => syncData(articleData, searchParams.get("aID") || null),
+      4000
+    );
 
-    const interval = setInterval(saveData, 3000);
-    const syncInterval = setInterval(syncData, 10000);
     return () => {
       clearInterval(interval);
+      clearTimeout(debounceTimeoutInstance);
     };
   }, [articleData.content]);
 
   return (
-    <main style={{ minHeight: "100vh" }}>
-      <h1 className="font-XL font-primary-gradient"> Create a New Guide</h1>
-      <div className="flex flex-column">
+    <main
+      style={{ minHeight: "100vh" }}
+      className="flex flex-center flex-column flex-gap-1"
+    >
+      <h1 className="fontXL primary-gradient-font"> Create a New Guide</h1>
+      <div className="flex flex-column flex-gap-1">
         <FormControl>
-          <FormLabel>Title</FormLabel>
+          <label htmlFor="title" className="fontL">
+            Title
+          </label>
           <Input
-            placeholder="Placeholder"
+            id="title"
+            placeholder="How to do <....>"
             value={articleData.title}
             onChange={(event) =>
-              setArticleData((prev) => ({ ...prev, title: event.target.value }))
+              setArticleData((prev) => ({
+                ...prev,
+                title: event.target.value,
+              }))
             }
           />
-          <FormHelperText>Enter the title of your guide</FormHelperText>
         </FormControl>
-        <FormLabel>
-          Please Choose a coverImage for your guide
+
+        <FormControl>
+          <label className="fontL">Content</label>
+
+          <Editor
+            apiKey={process.env.TINY_MCE_API_KEY}
+            onInit={(evt, editor) => (editorRef.current = editor)}
+            initialValue=""
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                "advlist",
+                "autolink",
+                "lists",
+                "link",
+                "image",
+                "charmap",
+                "preview",
+                "anchor",
+                "searchreplace",
+                "visualblocks",
+                "code",
+                "fullscreen",
+                "insertdatetime",
+                "media",
+                "table",
+                "code",
+                "help",
+                "wordcount",
+              ],
+              toolbar:
+                "undo redo | blocks | " +
+                "bold italic forecolor | alignleft aligncenter " +
+                "alignright alignjustify | bullist numlist outdent indent | " +
+                "removeformat | help",
+              content_style:
+                "body { font-family:Calibri,sans-serif; font-size:14px }",
+            }}
+          />
+        </FormControl>
+        <FormControl>
+          <label className="fontL">Cover Image</label>
+
           <input type="file" placeholder="Cover Image for your Guide" />
-        </FormLabel>
-        <Editor
-          apiKey={process.env.TINY_MCE_API_KEY}
-          onInit={(evt, editor) => (editorRef.current = editor)}
-          initialValue=""
-          init={{
-            height: 500,
-            menubar: false,
-            plugins: [
-              "advlist",
-              "autolink",
-              "lists",
-              "link",
-              "image",
-              "charmap",
-              "preview",
-              "anchor",
-              "searchreplace",
-              "visualblocks",
-              "code",
-              "fullscreen",
-              "insertdatetime",
-              "media",
-              "table",
-              "code",
-              "help",
-              "wordcount",
-            ],
-            toolbar:
-              "undo redo | blocks | " +
-              "bold italic forecolor | alignleft aligncenter " +
-              "alignright alignjustify | bullist numlist outdent indent | " +
-              "removeformat | help",
-            content_style:
-              "body { font-family:Calibri,sans-serif; font-size:14px }",
-          }}
-        />
+        </FormControl>
       </div>
     </main>
   );
