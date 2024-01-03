@@ -1,8 +1,12 @@
 "use server";
-import { addDoc, doc, setDoc } from "firebase/firestore";
 
+import { randomUUID } from "crypto";
 import { db, guidesCollection } from "@/lib/firebase";
 import { Guide } from "@/public/types/Guide";
+
+import { storageBucket } from "./firebase";
+import { getDownloadURL } from "firebase-admin/storage";
+
 /**
  * Debounced Updates to Database
  *
@@ -15,15 +19,12 @@ import { Guide } from "@/public/types/Guide";
 export async function syncData(data: Guide, docId: string | null) {
   console.log(`Updating: ${{ ...data }} with id ${docId}`);
   if (docId && data) {
-    const docRef = doc(db, "guides", docId);
-    await setDoc(
-      docRef,
-      {
-        ...data,
-        date: new Date().toUTCString(),
-      },
-      { merge: true }
-    );
+    // const docRef = doc(db, "guides", docId);
+    const docRef = db.doc(`guides/${docId}`);
+    await docRef.update({
+      ...data,
+      date: new Date().toUTCString(),
+    });
     console.log("update successfull");
   } else {
     console.log("Failed to sync Data");
@@ -39,12 +40,33 @@ export async function syncData(data: Guide, docId: string | null) {
 export async function generateNewArticle(): Promise<string> {
   try {
     const blankGuide = { title: "" };
-    const { id } = await addDoc(guidesCollection, blankGuide);
+    const { id } = await guidesCollection.add({ ...blankGuide });
     if (id === undefined) {
       throw new Error("Failed to create a new Guide!");
     }
     return id;
   } catch (err) {
     throw new Error("Failed to  creat");
+  }
+}
+
+/**
+ *
+ * @param value
+ * @returns
+ */
+export async function uploadImage(data: FormData) {
+  if (data) {
+    const file = data.get("img") as File;
+    const filename = `guides/cover/${randomUUID() + file.name}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const fileRef = storageBucket.file(filename);
+    const up = await fileRef.save(buffer);
+
+    const url = await getDownloadURL(fileRef);
+    return url;
+  } else {
+    console.log("No file");
   }
 }

@@ -6,10 +6,11 @@ import { useRef, useState, useEffect } from "react";
 import FormControl from "@mui/joy/FormControl";
 
 import Input from "@mui/joy/Input";
-import { syncData } from "@/lib/syncArticle";
+import { syncData, uploadImage } from "@/lib/syncArticle";
 import { Guide } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
+import { Button } from "@mui/joy";
 export default function page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
   const { data, status } = useSession();
@@ -21,11 +22,10 @@ export default function page() {
   //Data of the guide
   const [articleData, setArticleData] = useState<Guide>({
     userId: data.user?.email,
-   
     content: "",
     title: "",
   } as Guide);
-  console.log(articleData);
+  const [coverImg, setCoverImg] = useState<File | null>(null);
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
 
@@ -51,9 +51,6 @@ export default function page() {
    * which otherwise is left unchanged
    *
    */
-  function saveData() {
-    console.log("Data updated", articleData);
-  }
   useEffect(() => {
     return () => {
       //in case the Component gets Unmounted the most recent changes are synced with database
@@ -107,7 +104,25 @@ export default function page() {
       className="flex flex-center flex-column flex-gap-1"
     >
       <h1 className="fontXL primary-gradient-font"> Create a New Guide</h1>
-      <div className="flex flex-column flex-gap-1">
+      <div className="flex flex-between ">
+        <Button className="btn-dark ">Discard</Button>
+        <Button
+          className="btn-gradient"
+          onClick={async () => {
+            if (coverImg) {
+              const formData = new FormData();
+              formData.append("img", coverImg);
+              const imgURL = await uploadImage(formData);
+              setArticleData((prev: Guide) => {
+                return { ...prev, imgId: imgURL?.toString() || "" };
+              });
+            }
+          }}
+        >
+          Save
+        </Button>
+      </div>
+      <div className="flex flex-column f.lex-gap-1">
         <FormControl>
           <label htmlFor="title" className="fontL">
             Title
@@ -129,7 +144,7 @@ export default function page() {
           <label className="fontL">Content</label>
 
           <Editor
-            apiKey={process.env.TINY_MCE_API_KEY}
+            apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
             onInit={(evt, editor) => (editorRef.current = editor)}
             initialValue=""
             init={{
@@ -168,7 +183,13 @@ export default function page() {
         <FormControl>
           <label className="fontL">Cover Image</label>
 
-          <input type="file" placeholder="Cover Image for your Guide" />
+          <input
+            type="file"
+            onChange={(e) => {
+              setCoverImg(() => (e.target.files ? e.target.files[0] : null));
+            }}
+            placeholder="Cover Image for your Guide"
+          />
         </FormControl>
       </div>
     </main>

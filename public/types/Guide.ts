@@ -4,6 +4,7 @@ export interface Guide {
   date: string;
   userId: string;
   source: Source[] | null;
+  imgId: string
 }
 export interface User {
   userId: string;

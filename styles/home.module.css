@@ -19,6 +19,7 @@
   width: 100%;
   min-height: 100%;
   background: rgb(255, 255, 255);
+
   backdrop-filter: blur(2px);
 }
 .cover img {
