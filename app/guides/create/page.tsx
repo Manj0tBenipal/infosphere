@@ -113,6 +113,10 @@ export default function page() {
         </button>
         <button
           className="btn-gradient"
+          /**
+           * Uploads the image to firebase storage and adds the downloadURL of the image to articleData
+           * This URL then gets synced with the database of guides
+           */
           onClick={async () => {
             if (coverImg) {
               const formData = new FormData();
