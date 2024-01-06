@@ -19,13 +19,15 @@ import { getDownloadURL } from "firebase-admin/storage";
 export async function syncData(data: Guide, docId: string | null) {
   console.log(`Updating: ${{ ...data }} with id ${docId}`);
   if (docId && data) {
-    // const docRef = doc(db, "guides", docId);
+    console.log(data);
     const docRef = db.doc(`guides/${docId}`);
-    await docRef.update({
-      ...data,
-      date: new Date().toUTCString(),
-    });
-    console.log("update successfull");
+    await docRef.set(
+      {
+        ...data,
+        date: new Date().toUTCString(),
+      },
+      { merge: true }
+    );
   } else {
     console.log("Failed to sync Data");
   }
@@ -52,10 +54,10 @@ export async function generateNewArticle(): Promise<string> {
 
 /**
  *
- * @param value
- * @returns
+ * @param data The image in included as a FOrmData Object
+ * @returns the download URL for the image from the firebase storage
  */
-export async function uploadImage(data: FormData) {
+export async function uploadImage(data: FormData): Promise<string> {
   if (data) {
     const file = data.get("img") as File;
     const filename = `guides/cover/${randomUUID() + file.name}`;
@@ -68,5 +70,6 @@ export async function uploadImage(data: FormData) {
     return url;
   } else {
     console.log("No file");
+    return "No File Provided";
   }
 }

@@ -10,22 +10,23 @@ import { syncData, uploadImage } from "@/lib/syncArticle";
 import { Guide } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
-import { Button } from "@mui/joy";
+
 export default function page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
   const { data, status } = useSession();
-  if (status !== "authenticated") {
-    return redirect("/api/auth/signin");
-  }
+  // if (status !== "authenticated") {
+  //   return redirect("/api/auth/signin");
+  // }
   // ------ This code gets executed only if the user is logged in --------- //
   const searchParams = useSearchParams();
   //Data of the guide
   const [articleData, setArticleData] = useState<Guide>({
-    userId: data.user?.email,
+    userId: data?.user?.email,
     content: "",
     title: "",
   } as Guide);
   const [coverImg, setCoverImg] = useState<File | null>(null);
+  const [imageURL, setImageURL] = useState<string>("");
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
 
@@ -63,8 +64,10 @@ export default function page() {
 
   useEffect(() => {
     /**
-     * This function adds the behavior of one way data-binding from the component to the state
-     * Helps Implement debouncing while automatically  syncing data with the database
+     * This function adds the behavior of one way data-binding from the textEditor to the state
+     * Checks if there is any differendce between the content of text editor and articleData.content
+     * if there is no difference, the state of articleData is not updated
+     * If a difference is found the state is updated witht he latest data from text editor
      */
     const interval = setInterval(() => {
       if (editorRef.current) {
@@ -81,7 +84,7 @@ export default function page() {
     /**
      * Debounced Updates to Database
      *
-     * If the state is unchanged for 4 seconds the data is pushed to the database
+     * If the articleData is unchanged for 4 seconds the data is pushed to the database
      *
      * The function is not executed if:
      * 1. The articleData keeps changing at a frequency of every 4 seconds or less
@@ -96,33 +99,38 @@ export default function page() {
       clearInterval(interval);
       clearTimeout(debounceTimeoutInstance);
     };
-  }, [articleData.content, articleData.title]);
-
+  }, [articleData]);
+  console.log(articleData);
   return (
     <main
       style={{ minHeight: "100vh" }}
       className="flex flex-center flex-column flex-gap-1"
     >
       <h1 className="fontXL primary-gradient-font"> Create a New Guide</h1>
-      <div className="flex flex-between ">
-        <Button className="btn-dark ">Discard</Button>
-        <Button
+      <div className="flex flex-between width-full">
+        <button className="btn-dark " onClick={() => {}}>
+          Discard
+        </button>
+        <button
           className="btn-gradient"
           onClick={async () => {
             if (coverImg) {
               const formData = new FormData();
               formData.append("img", coverImg);
               const imgURL = await uploadImage(formData);
-              setArticleData((prev: Guide) => {
-                return { ...prev, imgId: imgURL?.toString() || "" };
-              });
+              if (imgURL) {
+                setArticleData((prev) => ({ ...prev, imgId: imgURL }));
+                syncData(articleData, searchParams.get("aID") || null);
+              }
+            } else {
+              alert("Please Provide a Cover Image!");
             }
           }}
         >
           Save
-        </Button>
+        </button>
       </div>
-      <div className="flex flex-column f.lex-gap-1">
+      <div className="flex flex-column flex-gap-1  width-full">
         <FormControl>
           <label htmlFor="title" className="fontL">
             Title
