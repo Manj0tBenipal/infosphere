@@ -10,6 +10,7 @@ import { deleteGuide, syncData, uploadImage } from "@/lib/syncArticle";
 import { Guide, Image } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@mui/joy";
 
 export default function page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
@@ -26,11 +27,24 @@ export default function page() {
     userId: data?.user?.email,
     content: "",
     title: "",
+    isPublic: false,
   } as Guide);
   const [coverImg, setCoverImg] = useState<File | null>(null);
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
-
+  async function saveImageAndArticle() {
+    if (coverImg) {
+      const formData = new FormData();
+      formData.append("img", coverImg);
+      const img: Image = await uploadImage(formData);
+      if (img) {
+        setArticleData((prev: Guide) => ({ ...prev, img: img } as Guide));
+        await syncData(articleData);
+      }
+    } else {
+      alert("Please Provide a Cover Image!");
+    }
+  }
   /**
    * used to compare the value stored in the state and the text editor to
    * decide whether to sync data with the database or not
@@ -134,27 +148,13 @@ export default function page() {
            * Uploads the image to firebase storage and adds the downloadURL of the image to articleData
            * This URL then gets synced with the database of guides
            */
-          onClick={async () => {
-            if (coverImg) {
-              const formData = new FormData();
-              formData.append("img", coverImg);
-              const img: Image = await uploadImage(formData);
-              if (img) {
-                setArticleData(
-                  (prev: Guide) => ({ ...prev, img: img } as Guide)
-                );
-                syncData(articleData);
-              }
-            } else {
-              alert("Please Provide a Cover Image!");
-            }
-          }}
+          onClick={saveImageAndArticle}
         >
           Save
         </button>
       </div>
 
-      <div className="flex flex-column">
+      <div className="flex flex-column flex-gap-1">
         <FormControl>
           <label htmlFor="title" className="fontL">
             Title
@@ -223,6 +223,15 @@ export default function page() {
             placeholder="Cover Image for your Guide"
           />
         </FormControl>
+        <Button
+          className="btn-gradient"
+          onClick={async () => {
+            setArticleData((prev: Guide) => ({ ...prev, isPublic: true }));
+            await saveImageAndArticle();
+          }}
+        >
+          Publish
+        </Button>
       </div>
     </main>
   );
