@@ -6,10 +6,10 @@ import { useRef, useState, useEffect } from "react";
 import FormControl from "@mui/joy/FormControl";
 
 import Input from "@mui/joy/Input";
-import { syncData, uploadImage } from "@/lib/syncArticle";
+import { deleteGuide, syncData, uploadImage } from "@/lib/syncArticle";
 import { Guide, Image } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 
 export default function page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
@@ -18,6 +18,7 @@ export default function page() {
   //   return redirect("/api/auth/signin");
   // }
   // ------ This code gets executed only if the user is logged in --------- //
+  const router = useRouter();
   const searchParams = useSearchParams();
   //Data of the guide
   const [articleData, setArticleData] = useState<Guide>({
@@ -91,7 +92,7 @@ export default function page() {
      * 2. The data reamains unchanged after the most recent push to the database
      */
     const debounceTimeoutInstance = setTimeout(
-      () => syncData(articleData, searchParams.get("aID") || null),
+      () => syncData(articleData),
       4000
     );
 
@@ -107,7 +108,24 @@ export default function page() {
     >
       <h1 className="fontXL primary-gradient-font"> Create a New Guide</h1>
       <div className="flex flex-between width-full">
-        <button className="btn-dark " onClick={() => {}}>
+        <button
+          className="btn-dark "
+          /**
+           * Deletes the Guide and its cover image from  firestore and firebase storage respectively
+           * After deletion:
+           * 1. An alert box is displayed (suceess ot failure)
+           * 2. if data is deleted successfully, the user is redirected to /guides
+           */
+          onClick={async () => {
+            const res = await deleteGuide(articleData.id, articleData?.img?.id);
+            if (res.status === "success") {
+              alert("Deleted Successfully");
+              return router.push("/guides");
+            } else {
+              alert("Falied to delete the Guide");
+            }
+          }}
+        >
           Discard
         </button>
         <button

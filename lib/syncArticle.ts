@@ -9,7 +9,7 @@ import { getDownloadURL } from "firebase-admin/storage";
 
 /**
  * Debounced Updates to Database
- *
+ *@param data
  * If the state is unchanged for 4 seconds the data is pushed to the database
  *
  * The function is not executed if:
@@ -70,5 +70,22 @@ export async function uploadImage(data: FormData): Promise<Image> {
   } else {
     console.log("No file");
     return { id: null, url: null } as Image;
+  }
+}
+
+export async function deleteGuide(guideId: string, imgPath: string | null) {
+  try {
+    if (imgPath) {
+      const imgRef = storageBucket.file(imgPath);
+      imgRef.delete();
+    } else {
+      console.log("No image was uploaded!");
+    }
+    const guideRef = db.doc(`guides/${guideId}`);
+    guideRef.delete();
+    return { status: "success" };
+  } catch (err) {
+    console.log("Failed to delete the data");
+    return { status: "failed" };
   }
 }
