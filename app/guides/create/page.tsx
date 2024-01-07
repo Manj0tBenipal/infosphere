@@ -7,7 +7,7 @@ import FormControl from "@mui/joy/FormControl";
 
 import Input from "@mui/joy/Input";
 import { syncData, uploadImage } from "@/lib/syncArticle";
-import { Guide } from "@/public/types/Guide";
+import { Guide, Image } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
 
@@ -26,7 +26,6 @@ export default function page() {
     title: "",
   } as Guide);
   const [coverImg, setCoverImg] = useState<File | null>(null);
-  const [imageURL, setImageURL] = useState<string>("");
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
 
@@ -100,7 +99,6 @@ export default function page() {
       clearTimeout(debounceTimeoutInstance);
     };
   }, [articleData]);
-  console.log(articleData);
   return (
     <main
       style={{ minHeight: "100vh" }}
@@ -121,9 +119,11 @@ export default function page() {
             if (coverImg) {
               const formData = new FormData();
               formData.append("img", coverImg);
-              const imgURL = await uploadImage(formData);
-              if (imgURL) {
-                setArticleData((prev) => ({ ...prev, imgId: imgURL }));
+              const img: Image = await uploadImage(formData);
+              if (img) {
+                setArticleData(
+                  (prev: Guide) => ({ ...prev, img: img } as Guide)
+                );
                 syncData(articleData, searchParams.get("aID") || null);
               }
             } else {
@@ -134,7 +134,8 @@ export default function page() {
           Save
         </button>
       </div>
-      <div className="flex flex-column flex-gap-1  width-full">
+
+      <div className="flex flex-column">
         <FormControl>
           <label htmlFor="title" className="fontL">
             Title

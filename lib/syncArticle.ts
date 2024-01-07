@@ -2,7 +2,7 @@
 
 import { randomUUID } from "crypto";
 import { db, guidesCollection } from "@/lib/firebase";
-import { Guide } from "@/public/types/Guide";
+import { Guide, Image } from "@/public/types/Guide";
 
 import { storageBucket } from "./firebase";
 import { getDownloadURL } from "firebase-admin/storage";
@@ -57,7 +57,7 @@ export async function generateNewArticle(): Promise<string> {
  * @param data The image in included as a FOrmData Object
  * @returns the download URL for the image from the firebase storage
  */
-export async function uploadImage(data: FormData): Promise<string> {
+export async function uploadImage(data: FormData): Promise<Image> {
   if (data) {
     const file = data.get("img") as File;
     const filename = `guides/cover/${randomUUID() + file.name}`;
@@ -67,9 +67,9 @@ export async function uploadImage(data: FormData): Promise<string> {
     const up = await fileRef.save(buffer);
 
     const url = await getDownloadURL(fileRef);
-    return url;
+    return { url: url, id: filename } as Image;
   } else {
     console.log("No file");
-    return "No File Provided";
+    return {id: null, url: null} as Image;
   }
 }
