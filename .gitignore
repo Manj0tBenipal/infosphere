@@ -45,3 +45,4 @@ next-env.d.ts
 firebaseadminkey.json
 key.json
 .env.development
+.env.production
