@@ -5,7 +5,10 @@ import styles from "@/styles/nav.module.css";
 import { FaBars } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 export default function Navbar() {
+  const { data, status } = useSession();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const path = usePathname();
   function isActive(currPath: string) {
@@ -13,6 +16,25 @@ export default function Navbar() {
   }
   return (
     <>
+      <button className="btn-dark">
+        {status === "authenticated" ? (
+          <Link href="/api/auth/signout">
+            <Image
+              priority
+              quality={100}
+              src={
+                data.user?.image ||
+                "https://lh3.googleusercontent.com/a/ACg8ocL-g6p5_r6mxg9sydDyO-VIUKZruaJAgXikciMZC32Gq9E=s360-c-no"
+              }
+              height={32}
+              width={32}
+              alt="avatar"
+            />
+          </Link>
+        ) : (
+          <Link href="/api/auth/signin">Sign In</Link>
+        )}
+      </button>
       <button
         onClick={() => {
           setMenuOpen(true);

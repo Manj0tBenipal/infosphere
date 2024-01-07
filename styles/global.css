@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif !important;
 }
 :root {
   --color-primary: rgb(164, 55, 219);
@@ -19,7 +20,6 @@ html {
   width: 100%;
 }
 body {
-  font-family: "Poppins", sans-serif;
   max-width: 2160px;
   margin: auto;
   width: 100%;
@@ -63,7 +63,7 @@ a {
 .flex-scroll-x {
   overflow-x: scroll;
 }
-.flex-around{
+.flex-around {
   justify-content: space-around;
 }
 
@@ -132,6 +132,7 @@ button:hover {
   display: inline-block;
   border-radius: 20px;
   transition: all 0.2s ease-in-out;
+  font-family: "Poppins", sans-serif;
 }
 .btn-primary {
   padding: 5px 10px;

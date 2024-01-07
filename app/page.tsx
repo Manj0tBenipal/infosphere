@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@mui/joy";
 import Credits from "@/components/home/Credits";
+import RotatingEarth from "@/components/home/RotatingEarth";
 export default function Page() {
   return (
     <main className={styles.main}>
@@ -23,6 +24,8 @@ export default function Page() {
           </h3>
           <Button className="btn-dark margin-top-1">Get Started</Button>
         </div>
+        
+        <RotatingEarth />
         <div className={styles.cover}>
           <Image
             priority

@@ -1,18 +1,15 @@
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import { IoMdWarning } from "react-icons/io";
 import Navbar from "@/components/Navbar";
 import "@/styles/global.css";
-import Image from "next/image";
-import styles from "@/styles/home.module.css";
+import SessionProvider from "@/components/SessionProvider";
+import { getServerSession } from "next-auth";
 import Footer from "@/components/news/Footer";
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
   return (
     <html lang="en">
       <head>
@@ -22,13 +19,15 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning={true}>
-        <p className="ud">
-          <IoMdWarning />
-          This Project is still in Development
-        </p>
-        <Navbar />
-        {children}
-        <Footer />
+        <SessionProvider session={session} >
+          <p className="ud">
+            <IoMdWarning />
+            This Project is still in Development
+          </p>
+          <Navbar />
+          {children}
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );
