@@ -4,12 +4,13 @@ import "@/styles/global.css";
 import SessionProvider from "@/components/SessionProvider";
 import { getServerSession } from "next-auth";
 import Footer from "@/components/news/Footer";
+import { authOptions } from "@/config/nextauth";
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <head>
@@ -19,7 +20,7 @@ export default async function RootLayout({
         />
       </head>
       <body suppressHydrationWarning={true}>
-        <SessionProvider session={session} >
+        <SessionProvider session={session}>
           <p className="ud">
             <IoMdWarning />
             This Project is still in Development
