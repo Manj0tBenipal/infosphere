@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@mui/joy";
 
-export default function page() {
+export default function Page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
   const { data, status } = useSession();
   // if (status !== "authenticated") {
