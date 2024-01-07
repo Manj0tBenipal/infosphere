@@ -21,6 +21,7 @@ export default function page() {
   const searchParams = useSearchParams();
   //Data of the guide
   const [articleData, setArticleData] = useState<Guide>({
+    id: searchParams.get("aID"),
     userId: data?.user?.email,
     content: "",
     title: "",
@@ -54,7 +55,7 @@ export default function page() {
   useEffect(() => {
     return () => {
       //in case the Component gets Unmounted the most recent changes are synced with database
-      syncData(articleData, searchParams.get("aID") || null);
+      syncData(articleData);
 
       //Clearing the editor reference to prevent memoryleaks
       editorRef.current = null;
@@ -124,7 +125,7 @@ export default function page() {
                 setArticleData(
                   (prev: Guide) => ({ ...prev, img: img } as Guide)
                 );
-                syncData(articleData, searchParams.get("aID") || null);
+                syncData(articleData);
               }
             } else {
               alert("Please Provide a Cover Image!");

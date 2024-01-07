@@ -16,11 +16,10 @@ import { getDownloadURL } from "firebase-admin/storage";
  * 1. The articleData keeps changing at a frequency of every 4 seconds or less
  * 2. The data reamains unchanged after the most recent push to the database
  */
-export async function syncData(data: Guide, docId: string | null) {
-  console.log(`Updating: ${{ ...data }} with id ${docId}`);
-  if (docId && data) {
-    console.log(data);
-    const docRef = db.doc(`guides/${docId}`);
+export async function syncData(data: Guide) {
+  console.log(`Updating: ${{ ...data }} with id ${data.id}`);
+  if (data?.id) {
+    const docRef = db.doc(`guides/${data.id}`);
     await docRef.set(
       {
         ...data,
@@ -70,6 +69,6 @@ export async function uploadImage(data: FormData): Promise<Image> {
     return { url: url, id: filename } as Image;
   } else {
     console.log("No file");
-    return {id: null, url: null} as Image;
+    return { id: null, url: null } as Image;
   }
 }
