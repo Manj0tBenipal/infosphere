@@ -78,6 +78,9 @@ a {
   box-shadow: 1px 1px 50px 10px var(--color-primary),
     -1px -1px 50px 10px var(--color-secondary);
 } */
+.wrapper {
+  max-width: var(--inner-el-max-width);
+}
 .background-dark {
   background-color: #000000;
 }
