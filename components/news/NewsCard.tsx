@@ -25,9 +25,13 @@ export default function NewsCard({
   return (
     <Link
       href={
-        //The parent property is used to determine the route to which the card should link
-        //If in search page the link includes the search keywords and the page
-        //If in headlines page the link includes the articleId which is the link to the original source of the article
+        /**
+         * The parent property is used to determine the route to which the card should link
+         *If in search page the link includes the search keywords and the page. The keyword and page are used to recreate the url of the original
+         *api request made to the news source which is cached on the server
+         *If in headlines page the link includes the articleId which is the link to the original source of the article
+
+         */
         parent === "search"
           ? `/news/article?ref=search${page ? "&page=" + page : ""}&articleId=${
               newsArticle.articleId
