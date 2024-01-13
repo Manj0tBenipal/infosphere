@@ -8,16 +8,15 @@ import { storageBucket } from "./firebase";
 import { getDownloadURL } from "firebase-admin/storage";
 
 /**
- * Debounced Updates to Database
+ * Syncs the contents of guide from the client-side to Database using server action
+ * WARNING: only suppports upto 1mb bdy size
  *@param data
- * If the state is unchanged for 4 seconds the data is pushed to the database
- *
  * The function is not executed if:
  * 1. The articleData keeps changing at a frequency of every 4 seconds or less
  * 2. The data reamains unchanged after the most recent push to the database
  */
-export async function syncData(data: Guide) {
-  console.log(`Updating: ${{ ...data }} with id ${data.id}`);
+export async function syncData_SA(data: Guide) {
+  console.log(`Updating: Document with id ${data.id}`);
   if (data?.id) {
     const docRef = db.doc(`guides/${data.id}`);
     await docRef.set(
