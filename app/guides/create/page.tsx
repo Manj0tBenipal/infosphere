@@ -1,15 +1,15 @@
 "use client";
-import { createHash } from "crypto";
+import { getHash, sizeBasedUploadDecision } from "@/lib/utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { Editor as TinyMCEEditor } from "tinymce";
 import { useRef, useState, useEffect } from "react";
 import FormControl from "@mui/joy/FormControl";
 
 import Input from "@mui/joy/Input";
-import { deleteGuide, syncData, uploadImage } from "@/lib/syncArticle";
+import { deleteGuide, uploadImage } from "@/lib/syncArticle";
 import { Guide, Image } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@mui/joy";
 
 export default function Page() {
@@ -39,24 +39,11 @@ export default function Page() {
       const img: Image = await uploadImage(formData);
       if (img) {
         setArticleData((prev: Guide) => ({ ...prev, img: img } as Guide));
-        await syncData(articleData);
+        await sizeBasedUploadDecision(articleData);
       }
     } else {
       alert("Please Provide a Cover Image!");
     }
-  }
-  /**
-   * used to compare the value stored in the state and the text editor to
-   * decide whether to sync data with the database or not
-   * @param inputString
-   * @returns generated hash for the inputString
-   */
-  function getHash(inputString: string) {
-    const input = inputString.toString().trim();
-    const hash = createHash("sha256");
-    hash.update(input);
-    const hashedString = hash.digest("hex");
-    return hashedString;
   }
 
   /**
@@ -70,7 +57,7 @@ export default function Page() {
   useEffect(() => {
     return () => {
       //in case the Component gets Unmounted the most recent changes are synced with database
-      syncData(articleData);
+      sizeBasedUploadDecision(articleData);
 
       //Clearing the editor reference to prevent memoryleaks
       editorRef.current = null;
@@ -106,7 +93,7 @@ export default function Page() {
      * 2. The data reamains unchanged after the most recent push to the database
      */
     const debounceTimeoutInstance = setTimeout(
-      () => syncData(articleData),
+      () => sizeBasedUploadDecision(articleData),
       4000
     );
 
@@ -121,8 +108,8 @@ export default function Page() {
       className="flex flex-center flex-column flex-gap-1"
     >
       <h1 className="fontXL primary-gradient-font"> Create a New Guide</h1>
-      <div className="flex flex-between width-full">
-        <button
+      <div className="flex flex-gap-1 width-full">
+        <Button
           className="btn-dark "
           /**
            * Deletes the Guide and its cover image from  firestore and firebase storage respectively
@@ -141,8 +128,29 @@ export default function Page() {
           }}
         >
           Discard
-        </button>
-        <button
+        </Button>
+        {articleData.isPublic ? (
+          <Button
+            className="btn-dark"
+            onClick={async () => {
+              setArticleData((prev: Guide) => ({ ...prev, isPublic: false }));
+              await saveImageAndArticle();
+            }}
+          >
+            Move to Drafts
+          </Button>
+        ) : (
+          <Button
+            className="btn-gradient"
+            onClick={async () => {
+              setArticleData((prev: Guide) => ({ ...prev, isPublic: true }));
+              await saveImageAndArticle();
+            }}
+          >
+            Publish
+          </Button>
+        )}
+        <Button
           className="btn-gradient"
           /**
            * Uploads the image to firebase storage and adds the downloadURL of the image to articleData
@@ -151,10 +159,10 @@ export default function Page() {
           onClick={saveImageAndArticle}
         >
           Save
-        </button>
+        </Button>
       </div>
 
-      <div className="flex flex-column flex-gap-1">
+      <div className="flex flex-column flex-gap-1 width-full">
         <FormControl>
           <label htmlFor="title" className="fontL">
             Title
@@ -223,15 +231,6 @@ export default function Page() {
             placeholder="Cover Image for your Guide"
           />
         </FormControl>
-        <Button
-          className="btn-gradient"
-          onClick={async () => {
-            setArticleData((prev: Guide) => ({ ...prev, isPublic: true }));
-            await saveImageAndArticle();
-          }}
-        >
-          Publish
-        </Button>
       </div>
     </main>
   );
