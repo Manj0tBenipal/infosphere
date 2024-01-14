@@ -1,17 +1,19 @@
 "use client";
-import { createHash } from "crypto";
+import { getHash, sizeBasedUploadDecision } from "@/lib/utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { Editor as TinyMCEEditor } from "tinymce";
 import { useRef, useState, useEffect } from "react";
 import FormControl from "@mui/joy/FormControl";
 
 import Input from "@mui/joy/Input";
-import { deleteGuide, syncData, uploadImage } from "@/lib/syncArticle";
+import { deleteGuide, uploadImage } from "@/lib/syncArticle";
 import { Guide, Image } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@mui/joy";
-
+import LoadingCurtain from "@/components/LoadingCurtain";
+import { API_RES } from "@/public/types/API";
+import { MessageDialog } from "@/public/types/mysc";
 export default function Page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
   const { data, status } = useSession();
@@ -29,6 +31,11 @@ export default function Page() {
     title: "",
     isPublic: false,
   } as Guide);
+  const [messageDialog, setMessageDialog] = useState<MessageDialog>({
+    isVisible: false,
+    message: "",
+    loading: false,
+  });
   const [coverImg, setCoverImg] = useState<File | null>(null);
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
@@ -36,27 +43,38 @@ export default function Page() {
     if (coverImg) {
       const formData = new FormData();
       formData.append("img", coverImg);
-      const img: Image = await uploadImage(formData);
-      if (img) {
-        setArticleData((prev: Guide) => ({ ...prev, img: img } as Guide));
-        await syncData(articleData);
+      const response: API_RES = JSON.parse(await uploadImage(formData));
+      console.log(response);
+      if (response.success) {
+        setArticleData(
+          (prev: Guide) => ({ ...prev, img: response.res.img } as Guide)
+        );
+        const res: API_RES = await sizeBasedUploadDecision(articleData);
+        setMessageDialog((prev: MessageDialog) => ({
+          ...prev,
+          message: "Uploading Data",
+          isVisible: true,
+          loading: true,
+        }));
+        if (res.success) {
+          setMessageDialog((prev: MessageDialog) => ({
+            ...prev,
+            message: "Data Saved Successfully",
+            isVisible: true,
+            loading: false,
+          }));
+        } else {
+          setMessageDialog((prev: MessageDialog) => ({
+            ...prev,
+            message: "Failed to save data",
+            isVisible: true,
+            loading: false,
+          }));
+        }
       }
     } else {
       alert("Please Provide a Cover Image!");
     }
-  }
-  /**
-   * used to compare the value stored in the state and the text editor to
-   * decide whether to sync data with the database or not
-   * @param inputString
-   * @returns generated hash for the inputString
-   */
-  function getHash(inputString: string) {
-    const input = inputString.toString().trim();
-    const hash = createHash("sha256");
-    hash.update(input);
-    const hashedString = hash.digest("hex");
-    return hashedString;
   }
 
   /**
@@ -68,10 +86,12 @@ export default function Page() {
    *
    */
   useEffect(() => {
+    async function a() {
+      await sizeBasedUploadDecision(articleData);
+    }
     return () => {
       //in case the Component gets Unmounted the most recent changes are synced with database
-      syncData(articleData);
-
+      a();
       //Clearing the editor reference to prevent memoryleaks
       editorRef.current = null;
     };
@@ -106,8 +126,8 @@ export default function Page() {
      * 2. The data reamains unchanged after the most recent push to the database
      */
     const debounceTimeoutInstance = setTimeout(
-      () => syncData(articleData),
-      4000
+      async () => await sizeBasedUploadDecision(articleData),
+      6000
     );
 
     return () => {
@@ -115,14 +135,21 @@ export default function Page() {
       clearTimeout(debounceTimeoutInstance);
     };
   }, [articleData]);
+  console.log(articleData);
   return (
     <main
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100vh", position: "relative" }}
       className="flex flex-center flex-column flex-gap-1"
     >
+      {messageDialog.isVisible && (
+        <LoadingCurtain
+          properties={messageDialog}
+          setProperties={setMessageDialog}
+        />
+      )}
       <h1 className="fontXL primary-gradient-font"> Create a New Guide</h1>
-      <div className="flex flex-between width-full">
-        <button
+      <div className="flex flex-gap-1 width-full">
+        <Button
           className="btn-dark "
           /**
            * Deletes the Guide and its cover image from  firestore and firebase storage respectively
@@ -131,30 +158,51 @@ export default function Page() {
            * 2. if data is deleted successfully, the user is redirected to /guides
            */
           onClick={async () => {
-            const res = await deleteGuide(articleData.id, articleData?.img?.id);
-            if (res.status === "success") {
+            const res: API_RES = JSON.parse(
+              await deleteGuide(articleData.id, articleData?.img?.id)
+            );
+            if (res.success) {
               alert("Deleted Successfully");
               return router.push("/guides");
             } else {
-              alert("Falied to delete the Guide");
+              setMessageDialog((prev: MessageDialog) => ({
+                ...prev,
+                isVisible: true,
+                loading: false,
+                message: "Failed to Delete Guide",
+              }));
             }
           }}
         >
           Discard
-        </button>
-        <button
+        </Button>
+
+        <Button
+          className={articleData.isPublic ? "btn-dark" : "btn-gradient"}
+          onClick={async () => {
+            setArticleData((prev: Guide) => ({
+              ...prev,
+              isPublic: !prev.isPublic,
+            }));
+            await saveImageAndArticle();
+          }}
+        >
+          {articleData.isPublic ? "Move to Drafts" : "Publish"}
+        </Button>
+
+        <Button
           className="btn-gradient"
           /**
            * Uploads the image to firebase storage and adds the downloadURL of the image to articleData
            * This URL then gets synced with the database of guides
            */
-          onClick={saveImageAndArticle}
+          onClick={async () => await saveImageAndArticle()}
         >
           Save
-        </button>
+        </Button>
       </div>
 
-      <div className="flex flex-column flex-gap-1">
+      <div className="flex flex-column flex-gap-1 width-full">
         <FormControl>
           <label htmlFor="title" className="fontL">
             Title
@@ -202,13 +250,14 @@ export default function Page() {
                 "help",
                 "wordcount",
               ],
+              font_formats:
+                "Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats, Poppins=Poppins, sans-serif",
               toolbar:
                 "undo redo | blocks | " +
-                "bold italic forecolor | alignleft aligncenter " +
+                "bold italic forecolor | alignleft aligncenter | fontselect " +
                 "alignright alignjustify | bullist numlist outdent indent | " +
                 "removeformat | help",
-              content_style:
-                "body { font-family:Calibri,sans-serif; font-size:14px }",
+              content_style: `import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");`,
             }}
           />
         </FormControl>
@@ -223,15 +272,6 @@ export default function Page() {
             placeholder="Cover Image for your Guide"
           />
         </FormControl>
-        <Button
-          className="btn-gradient"
-          onClick={async () => {
-            setArticleData((prev: Guide) => ({ ...prev, isPublic: true }));
-            await saveImageAndArticle();
-          }}
-        >
-          Publish
-        </Button>
       </div>
     </main>
   );

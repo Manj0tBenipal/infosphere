@@ -46,3 +46,5 @@ firebaseadminkey.json
 key.json
 .env.development
 .env.production
+deploy.sh
+deploy.sh
