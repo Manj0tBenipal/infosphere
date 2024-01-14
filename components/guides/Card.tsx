@@ -21,7 +21,7 @@ export default function CardComponent({ data }: { data: Guide }): ReactElement {
               : data.title}
           </Typography>
           <Typography level="body-sm">
-            {data.content.length > 100
+            {data.content?.length > 100
               ? data.content.slice(0, 100) + "..."
               : data.content}
           </Typography>
