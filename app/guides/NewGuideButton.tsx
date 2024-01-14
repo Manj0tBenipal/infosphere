@@ -16,6 +16,8 @@ export default function NewGuideButton() {
           const searchParams = new URLSearchParams();
           searchParams.append("aID", res.res.id);
           router.push(`${pathname}/create?${searchParams.toString()}`);
+        } else {
+          alert(res.err);
         }
       }}
       className="btn-dark"
