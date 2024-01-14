@@ -1,6 +1,7 @@
 import { Guide } from "@/public/types/Guide";
 import { syncData_SA } from "./syncArticle";
 import { createHash } from "crypto";
+import { API_RES } from "@/public/types/API";
 const encoder = new TextEncoder();
 /**
  * Used to choose whether to sync data using a server action or an API call
@@ -9,8 +10,8 @@ const encoder = new TextEncoder();
  *
  * @param data
  */
-export async function sizeBasedUploadDecision(data: Guide) {
-  "use client";
+export async function sizeBasedUploadDecision(data: Guide): Promise<API_RES> {
+  const res = new API_RES();
   let sizeInBytes = 0;
   Object.entries(data).forEach(([key, value]) => {
     if (value) {
@@ -24,10 +25,18 @@ export async function sizeBasedUploadDecision(data: Guide) {
       }
     }
   });
-  if (sizeInBytes / (1024 * 1024) > 1) {
-    await syncData_AR(data);
-  } else {
-    await syncData_SA(data);
+  try {
+    if (sizeInBytes / (1024 * 1024) > 1) {
+      await syncData_AR(data);
+    } else {
+      await syncData_SA(data);
+    }
+    res.success = true;
+    return res;
+  } catch (err) {
+    res.success = false;
+    res.err = (err as string).toString();
+    return res;
   }
 }
 
