@@ -41,21 +41,20 @@ export default function Page() {
   const editorRef = useRef<TinyMCEEditor | null>(null);
   async function saveImageAndArticle() {
     if (coverImg) {
+      setMessageDialog((prev: MessageDialog) => ({
+        ...prev,
+        message: "Uploading Data",
+        isVisible: true,
+        loading: true,
+      }));
       const formData = new FormData();
       formData.append("img", coverImg);
       const response: API_RES = JSON.parse(await uploadImage(formData));
-      console.log(response);
       if (response.success) {
         setArticleData(
           (prev: Guide) => ({ ...prev, img: response.res.img } as Guide)
         );
         const res: API_RES = await sizeBasedUploadDecision(articleData);
-        setMessageDialog((prev: MessageDialog) => ({
-          ...prev,
-          message: "Uploading Data",
-          isVisible: true,
-          loading: true,
-        }));
         if (res.success) {
           setMessageDialog((prev: MessageDialog) => ({
             ...prev,
