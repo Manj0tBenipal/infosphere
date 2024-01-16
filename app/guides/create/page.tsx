@@ -30,6 +30,10 @@ export default function Page() {
    * This is used to prevent unnecessary execution of CRUD operations inside useEffects during the first render
    */
   const [firstRender, setFirstRender] = useState<boolean>(true);
+  /**
+   * data about the guide that serves as the basic model for interacting with the database
+   * all the CRUD operations are based on this state
+   */
   const [articleData, setArticleData] = useState<Guide>({
     id: searchParams.get("aID"),
     userId: data?.user?.email,
@@ -37,14 +41,18 @@ export default function Page() {
     title: "",
     isPublic: false,
   } as Guide);
+
+
   const [messageDialog, setMessageDialog] = useState<MessageDialog>({
     isVisible: false,
     message: "",
     loading: false,
   });
+  //The path of coverImg
   const [coverImg, setCoverImg] = useState<File | null>(null);
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
+
   async function saveImageAndArticle() {
     const res = new API_RES();
     try {
@@ -258,10 +266,10 @@ export default function Page() {
           Sync
         </Button>
         <Button
-          // onClick={async () => {
-          //   await saveImageAndArticle();
-          //   router.push("/guides");
-          // }}
+        // onClick={async () => {
+        //   await saveImageAndArticle();
+        //   router.push("/guides");
+        // }}
         >
           Save & Exit
         </Button>
