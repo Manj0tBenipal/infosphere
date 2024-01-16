@@ -7,13 +7,14 @@ import FormControl from "@mui/joy/FormControl";
 
 import Input from "@mui/joy/Input";
 import { deleteGuide, uploadImage } from "@/lib/syncArticle";
-import { Guide, Image } from "@/public/types/Guide";
+import { Guide } from "@/public/types/Guide";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@mui/joy";
 import LoadingCurtain from "@/components/LoadingCurtain";
 import { API_RES } from "@/public/types/API";
 import { MessageDialog } from "@/public/types/mysc";
+import { revalidatePath } from "next/cache";
 export default function Page() {
   //Fetches data about the session(user is required to be logged in before creating a new post)
   const { data, status } = useSession();
@@ -24,6 +25,11 @@ export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   //Data of the guide
+  /**
+   * This state is used to keep track if the compoenent has rendered for the first time
+   * This is used to prevent unnecessary execution of CRUD operations inside useEffects during the first render
+   */
+  const [firstRender, setFirstRender] = useState<boolean>(true);
   const [articleData, setArticleData] = useState<Guide>({
     id: searchParams.get("aID"),
     userId: data?.user?.email,
@@ -40,39 +46,51 @@ export default function Page() {
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
   async function saveImageAndArticle() {
-    if (coverImg) {
-      setMessageDialog((prev: MessageDialog) => ({
-        ...prev,
-        message: "Uploading Data",
-        isVisible: true,
-        loading: true,
-      }));
-      const formData = new FormData();
-      formData.append("img", coverImg);
-      const response: API_RES = JSON.parse(await uploadImage(formData));
-      if (response.success) {
-        setArticleData(
-          (prev: Guide) => ({ ...prev, img: response.res.img } as Guide)
-        );
-        const res: API_RES = await sizeBasedUploadDecision(articleData);
-        if (res.success) {
-          setMessageDialog((prev: MessageDialog) => ({
+    const res = new API_RES();
+    try {
+      if (coverImg) {
+        setMessageDialog(() => ({
+          isVisible: true,
+          message: "Uploading Image!",
+          loading: true,
+        }));
+        const formData = new FormData();
+        formData.append("img", coverImg);
+        const imgRes: API_RES = JSON.parse(await uploadImage(formData));
+        if (imgRes.success) {
+          setMessageDialog((prev) => ({
             ...prev,
-            message: "Data Saved Successfully",
-            isVisible: true,
-            loading: false,
+            message: "Image Uploaded. Syncing Contents",
           }));
-        } else {
-          setMessageDialog((prev: MessageDialog) => ({
-            ...prev,
-            message: "Failed to save data",
-            isVisible: true,
-            loading: false,
-          }));
+          setArticleData(
+            (prev: Guide) => ({ ...prev, img: imgRes.res.img } as Guide)
+          );
+          const articleDataRes: API_RES = await sizeBasedUploadDecision(
+            articleData
+          );
+          if (articleDataRes.success) {
+            setMessageDialog((prev: MessageDialog) => ({
+              ...prev,
+              message: "Data Saved Successfully",
+              loading: false,
+            }));
+          } else {
+            setMessageDialog((prev: MessageDialog) => ({
+              ...prev,
+              message: "Failed to save data",
+              loading: false,
+            }));
+          }
         }
+      } else {
+        alert("Please Provide a Cover Image!");
       }
-    } else {
-      alert("Please Provide a Cover Image!");
+    } catch (err) {
+      setMessageDialog(() => ({
+        isVisible: true,
+        message: (err as string).toString(),
+        loading: false,
+      }));
     }
   }
 
@@ -85,16 +103,44 @@ export default function Page() {
    *
    */
   useEffect(() => {
-    async function a() {
-      await sizeBasedUploadDecision(articleData);
+    async function saveAndExit() {
+      await saveImageAndArticle();
     }
     return () => {
       //in case the Component gets Unmounted the most recent changes are synced with database
-      a();
+      saveAndExit();
       //Clearing the editor reference to prevent memoryleaks
       editorRef.current = null;
     };
   }, []);
+  /**
+   * This useEffect changes the visibility status of a guided from public to private and vice versa
+   * The isPublic property of Guide isn't automatically synced as are the title, content and image
+   *
+   * It is triggered when the isPublic property of articleData changes.
+   *
+   */
+  useEffect(() => {
+    /**
+     * This function initializes a request to change the visibility stauts of Guide
+     * Also message dialog is made visible with a loading icon
+     * The dialog is then changed to a confirmation dialogue displaying the message fo success or failure
+     * depending on the response returned by the sizebaseUploadDecision90
+     */
+    async function changeVisibility() {
+      const res = await sizeBasedUploadDecision(articleData);
+      setMessageDialog(() => ({
+        message: `${res.success ? "Done" : "Failed to upload Status"}`,
+        loading: false,
+        isVisible: true,
+      }));
+    }
+    if (!firstRender) {
+      changeVisibility();
+    } else {
+      setFirstRender(false);
+    }
+  }, [articleData.isPublic]);
 
   useEffect(() => {
     /**
@@ -133,8 +179,12 @@ export default function Page() {
       clearInterval(interval);
       clearTimeout(debounceTimeoutInstance);
     };
-  }, [articleData]);
-  console.log(articleData);
+  }, [
+    articleData.title,
+    articleData.content,
+    articleData.userId,
+    articleData.img,
+  ]);
   return (
     <main
       style={{ minHeight: "100vh", position: "relative" }}
@@ -179,11 +229,19 @@ export default function Page() {
         <Button
           className={articleData.isPublic ? "btn-dark" : "btn-gradient"}
           onClick={async () => {
+            setMessageDialog((prev: MessageDialog) => ({
+              ...prev,
+              isVisible: true,
+              message: `Making the article ${
+                !articleData.isPublic ? "Public" : "Private"
+              }`,
+              loading: true,
+            }));
+
             setArticleData((prev: Guide) => ({
               ...prev,
               isPublic: !prev.isPublic,
             }));
-            await saveImageAndArticle();
           }}
         >
           {articleData.isPublic ? "Move to Drafts" : "Publish"}
@@ -197,7 +255,15 @@ export default function Page() {
            */
           onClick={async () => await saveImageAndArticle()}
         >
-          Save
+          Sync
+        </Button>
+        <Button
+          // onClick={async () => {
+          //   await saveImageAndArticle();
+          //   router.push("/guides");
+          // }}
+        >
+          Save & Exit
         </Button>
       </div>
 
