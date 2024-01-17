@@ -41,20 +41,22 @@ export default function Page() {
     title: "",
     isPublic: false,
   } as Guide);
-
-
+  /**
+   * Represents the properties governing the behavior of MessageDialog which is used to display the
+   * messaged while intercating with database
+   */
   const [messageDialog, setMessageDialog] = useState<MessageDialog>({
     isVisible: false,
     message: "",
     loading: false,
   });
+  const [lastSyncId, setLastSyncId] = useState("");
   //The path of coverImg
   const [coverImg, setCoverImg] = useState<File | null>(null);
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
 
   async function saveImageAndArticle() {
-    const res = new API_RES();
     try {
       if (coverImg) {
         setMessageDialog(() => ({
@@ -115,10 +117,12 @@ export default function Page() {
       await saveImageAndArticle();
     }
     return () => {
-      //in case the Component gets Unmounted the most recent changes are synced with database
-      saveAndExit();
-      //Clearing the editor reference to prevent memoryleaks
-      editorRef.current = null;
+      if (!firstRender) {
+        //in case the Component gets Unmounted the most recent changes are synced with database
+        saveAndExit();
+        //Clearing the editor reference to prevent memoryleaks
+        editorRef.current = null;
+      }
     };
   }, []);
   /**
@@ -138,7 +142,13 @@ export default function Page() {
     async function changeVisibility() {
       const res = await sizeBasedUploadDecision(articleData);
       setMessageDialog(() => ({
-        message: `${res.success ? "Done" : "Failed to upload Status"}`,
+        message: `${
+          res.success
+            ? `This article is now ${
+                articleData.isPublic ? "Public" : "a Draft"
+              }`
+            : "Failed to upload Status"
+        }`,
         loading: false,
         isVisible: true,
       }));
