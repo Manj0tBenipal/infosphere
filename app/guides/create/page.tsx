@@ -14,9 +14,9 @@ import { Button } from "@mui/joy";
 import LoadingCurtain from "@/components/LoadingCurtain";
 import { API_RES } from "@/public/types/API";
 import { MessageDialog } from "@/public/types/mysc";
-import { revalidatePath } from "next/cache";
+import { revalidate } from "@/lib/server_actions";
 export default function Page() {
-  //Fetches data about the session(user is required to be logged in before creating a new post)
+  //Fetches data about the session(userID is required as a field in articleData)
   const { data, status } = useSession();
   // if (status !== "authenticated") {
   //   return redirect("/api/auth/signin");
@@ -230,6 +230,7 @@ export default function Page() {
             );
             if (res.success) {
               alert("Deleted Successfully");
+
               return router.push("/guides");
             } else {
               setMessageDialog((prev: MessageDialog) => ({
@@ -276,10 +277,15 @@ export default function Page() {
           Sync
         </Button>
         <Button
-        // onClick={async () => {
-        //   await saveImageAndArticle();
-        //   router.push("/guides");
-        // }}
+          onClick={async () => {
+            await saveImageAndArticle();
+
+            if (articleData.isPublic) {
+              const res: API_RES = JSON.parse(await revalidate("/guides"));
+            }
+            router.prefetch("/guides");
+            router.push("/guides");
+          }}
         >
           Save & Exit
         </Button>
