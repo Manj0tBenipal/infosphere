@@ -11,6 +11,9 @@ export default function LoadingCurtain({
   return (
     <div className="curtain flex flex-center">
       <div className="message-box flex flex-center flex-column flex-gap-1">
+        {/*
+         *Rendered only when loading indicator is required
+         */}
         {properties.loading && (
           <AiOutlineLoading3Quarters
             className="rotate"
@@ -18,17 +21,23 @@ export default function LoadingCurtain({
             style={{ color: "var(--color-primary)" }}
           />
         )}
-        <h3> {properties.message}</h3>
-        <Button
-          onClick={() =>
-            setProperties((prev: MessageDialog) => ({
-              ...prev,
-              isVisible: false,
-            }))
-          }
-        >
-          Ok
-        </Button>
+        <h3 style={{ textAlign: "center" }}>{properties.message}</h3>
+        {/*
+         *Displayed when loading property is false
+         *means a message is being displayed
+         */}
+        {!properties.loading && (
+          <Button
+            onClick={() =>
+              setProperties((prev: MessageDialog) => ({
+                ...prev,
+                isVisible: false,
+              }))
+            }
+          >
+            Ok
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -4,9 +4,11 @@ import NewGuideButton from "./NewGuideButton";
 import { API_RES } from "@/public/types/API";
 import CardComponent from "@/components/guides/Card";
 
-export const dynamic = "force-dynamic";
 export default async function page() {
-  const response = await fetch(`${process.env.APP_URL}/api/guides`);
+  //Requests are cached for 1 day unless the path is revalidated when a user deletes or adds a new guide
+  const response = await fetch(`${process.env.APP_URL}/api/guides`, {
+    next: { revalidate: 86400 },
+  });
   const { res, err } = (await response.json()) as API_RES;
   const guideCards = !err
     ? res.map((guide: Guide) => {
