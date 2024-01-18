@@ -58,23 +58,52 @@ export default function Page() {
 
   async function saveImageAndArticle() {
     try {
+      //Check if user has provided the file in the form
+      //if not skip syncing and show an alert message
       if (coverImg) {
         setMessageDialog(() => ({
           isVisible: true,
-          message: "Uploading Image!",
+          message: "Saving Changes",
           loading: true,
         }));
-        const formData = new FormData();
-        formData.append("img", coverImg);
-        const imgRes: API_RES = JSON.parse(await uploadImage(formData));
-        if (imgRes.success) {
-          setMessageDialog((prev) => ({
+        /**
+         * Check if the image is the same as it was  in the last database sync operation
+         * If it is the same, Sync other fields and keep the image unchanged
+         * Skip the upload of Image
+         */
+        if (
+          articleData?.img?.id &&
+          getHash(coverImg.name) === getHash(articleData?.img.id?.slice(49))
+        ) {
+          setMessageDialog((prev: MessageDialog) => ({
             ...prev,
-            message: "Image Uploaded. Syncing Contents",
+            message: "Skipping Image Upload(Image unchanged)",
           }));
-          setArticleData(
-            (prev: Guide) => ({ ...prev, img: imgRes.res.img } as Guide)
-          );
+          const res: API_RES = await sizeBasedUploadDecision(articleData);
+          if (res.success) {
+            setMessageDialog((prev: MessageDialog) => ({
+              ...prev,
+              loading: false,
+              message: "Data Successfully uploaded",
+            }));
+          }
+        } else {
+          setMessageDialog((prev: MessageDialog) => ({
+            ...prev,
+            message: "Uploading Image!",
+          }));
+          const formData = new FormData();
+          formData.append("img", coverImg);
+          const imgRes: API_RES = JSON.parse(await uploadImage(formData));
+          if (imgRes.success) {
+            setMessageDialog((prev) => ({
+              ...prev,
+              message: "Image Uploaded. Syncing Contents",
+            }));
+            setArticleData(
+              (prev: Guide) => ({ ...prev, img: imgRes.res.img } as Guide)
+            );
+          }
         }
       } else {
         alert("Please Provide a Cover Image!");
