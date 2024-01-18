@@ -108,7 +108,7 @@ export async function uploadImage(data: FormData) {
  * firestore and firebase storage
  * @param guideId
  * @param imgPath
- * @returns API_RES
+ * @returns serialized abject of API_RES 
  */
 export async function deleteGuide(guideId: string, imgPath: string | null) {
   const res = new API_RES();
