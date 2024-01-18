@@ -75,30 +75,14 @@ export default function Page() {
           setArticleData(
             (prev: Guide) => ({ ...prev, img: imgRes.res.img } as Guide)
           );
-          const articleDataRes: API_RES = await sizeBasedUploadDecision(
-            articleData
-          );
-          if (articleDataRes.success) {
-            setMessageDialog((prev: MessageDialog) => ({
-              ...prev,
-              message: "Data Saved Successfully",
-              loading: false,
-            }));
-          } else {
-            setMessageDialog((prev: MessageDialog) => ({
-              ...prev,
-              message: "Failed to save data",
-              loading: false,
-            }));
-          }
         }
       } else {
         alert("Please Provide a Cover Image!");
       }
-    } catch (err) {
+    } catch (err: any) {
       setMessageDialog(() => ({
         isVisible: true,
-        message: (err as string).toString(),
+        message: err.toString(),
         loading: false,
       }));
     }
@@ -197,17 +181,43 @@ export default function Page() {
       clearInterval(interval);
       clearTimeout(debounceTimeoutInstance);
     };
-  }, [
-    articleData.title,
-    articleData.content,
-    articleData.userId,
-    articleData.img,
-  ]);
+  }, [articleData.title, articleData.content, articleData.userId]);
+  /**
+   * This useEffect is in response to the change in img field of articleData
+   * As soon as the img is uploaded to the database and the state is updated with new URL
+   * The new state is synced with firestore database
+   */
+  useEffect(() => {
+    async function syncImgChanges() {
+      const articleDataRes: API_RES = await sizeBasedUploadDecision(
+        articleData
+      );
+      if (articleDataRes.success) {
+        setMessageDialog((prev: MessageDialog) => ({
+          ...prev,
+          message: "Data Saved Successfully",
+          loading: false,
+        }));
+      } else {
+        setMessageDialog((prev: MessageDialog) => ({
+          ...prev,
+          message: "Failed to save data",
+          loading: false,
+        }));
+      }
+    }
+    if (!firstRender) {
+      syncImgChanges();
+    }
+  }, [articleData.img]);
   return (
     <main
       style={{ minHeight: "100vh", position: "relative" }}
       className="flex flex-center flex-column flex-gap-1"
     >
+      {/*
+       * The message dialog to display status of an operation being performed on the database
+       */}
       {messageDialog.isVisible && (
         <LoadingCurtain
           properties={messageDialog}
@@ -230,7 +240,6 @@ export default function Page() {
             );
             if (res.success) {
               alert("Deleted Successfully");
-
               return router.push("/guides");
             } else {
               setMessageDialog((prev: MessageDialog) => ({
