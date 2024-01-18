@@ -53,6 +53,17 @@ export default function Page() {
   const [lastSyncId, setLastSyncId] = useState("");
   //The path of coverImg
   const [coverImg, setCoverImg] = useState<File | null>(null);
+
+  /**
+   * Keeps track if the user has triggered the deletion of a guide
+   * if the user accidentally exits the page, the component unmount is triggered
+   * It results in the invokation of the function(syncs latest data) in useEffect which is used as a safety measure to prevent loss of data
+   *
+   * But the discard button also triggers unmount which results in creation of the same document again
+   *
+   * To prevent it the data losss prevention will not be triggered if this state is set to true
+   */
+  const [deleteTriggered, setDeleteTriggered] = useState<boolean>(false);
   //Used to retrieve the data from the Text Editor
   const editorRef = useRef<TinyMCEEditor | null>(null);
 
@@ -239,6 +250,37 @@ export default function Page() {
       syncImgChanges();
     }
   }, [articleData.img]);
+
+  /**
+   * Trigggered when the user decides to delete the guide
+   */
+  useEffect(() => {
+    /**
+     * Deletes the Guide and its cover image from  firestore and firebase storage respectively
+     * After deletion:
+     * 1. An alert box is displayed (suceess ot failure)
+     * 2. if data is deleted successfully, the user is redirected to /guides
+     */
+    async function discard() {
+      const res: API_RES = JSON.parse(
+        await deleteGuide(articleData.id, articleData?.img?.id)
+      );
+      if (res.success) {
+        alert("Deleted Successfully");
+        return router.push("/guides");
+      } else {
+        setMessageDialog((prev: MessageDialog) => ({
+          ...prev,
+          isVisible: true,
+          loading: false,
+          message: "Failed to Delete Guide",
+        }));
+      }
+    }
+    if (!firstRender) {
+      discard();
+    }
+  }, [deleteTriggered]);
   return (
     <main
       style={{ minHeight: "100vh", position: "relative" }}
@@ -257,27 +299,8 @@ export default function Page() {
       <div className="flex flex-gap-1 width-full">
         <Button
           className="btn-dark "
-          /**
-           * Deletes the Guide and its cover image from  firestore and firebase storage respectively
-           * After deletion:
-           * 1. An alert box is displayed (suceess ot failure)
-           * 2. if data is deleted successfully, the user is redirected to /guides
-           */
-          onClick={async () => {
-            const res: API_RES = JSON.parse(
-              await deleteGuide(articleData.id, articleData?.img?.id)
-            );
-            if (res.success) {
-              alert("Deleted Successfully");
-              return router.push("/guides");
-            } else {
-              setMessageDialog((prev: MessageDialog) => ({
-                ...prev,
-                isVisible: true,
-                loading: false,
-                message: "Failed to Delete Guide",
-              }));
-            }
+          onClick={() => {
+            setDeleteTriggered(true);
           }}
         >
           Discard
