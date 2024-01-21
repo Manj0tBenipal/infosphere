@@ -6,11 +6,11 @@ export interface Guide {
   userId: string;
   source: Source[] | null;
   img: Image;
-  isPublic: boolean
+  isPublic: boolean;
 }
 export interface Image {
-  id: string | null;
-  url: string | null;
+  id: string;
+  url: string;
 }
 export interface User {
   userId: string;
