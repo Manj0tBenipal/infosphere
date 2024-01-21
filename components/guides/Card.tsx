@@ -20,11 +20,9 @@ export default function CardComponent({ data }: { data: Guide }): ReactElement {
               ? data.title.slice(0, 80) + "..."
               : data.title}
           </Typography>
-          <Typography level="body-sm">
-            {data.content?.length > 100
-              ? data.content.slice(0, 100) + "..."
-              : data.content}
-          </Typography>
+        
+          <Typography level="body-sm">{data.userId}</Typography>
+          <Typography level="body-xs">{data.date}</Typography>
         </div>
       </Card>
     </Link>
