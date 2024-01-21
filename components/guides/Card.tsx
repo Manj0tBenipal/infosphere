@@ -14,15 +14,15 @@ export default function CardComponent({ data }: { data: Guide }): ReactElement {
             alt=""
           />
         </AspectRatio>
+        <Typography level="body-xs">{data.date}</Typography>
         <div>
-          <Typography level="title-lg">
+          <Typography level="title-lg" className={newsStyles.cardTitle}>
             {data.title.length > 80
               ? data.title.slice(0, 80) + "..."
               : data.title}
           </Typography>
 
           <Typography level="body-sm">{data.userId}</Typography>
-          <Typography level="body-xs">{data.date}</Typography>
         </div>
       </Card>
     </Link>
