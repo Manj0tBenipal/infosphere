@@ -148,6 +148,7 @@
   display: inline-block;
   width: calc(100% / 3 - 1rem);
   align-self: stretch;
+  overflow: hidden;
 }
 
 .coverImage {
@@ -162,4 +163,16 @@
 }
 .newsPara {
   margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 900px) {
+  .newsCard {
+    width: calc((100% / 2) - 1rem);
+  }
+}
+@media screen and (max-width: 500px) {
+  .newsCard {
+    width: 100%;
+    max-width: 400px;
+  }
 }
