@@ -17,7 +17,7 @@ export default async function page() {
     : null;
 
   return (
-    <div
+    <main
       style={{ minHeight: "100vh" }}
       className="flex flex-column wrapper flex-gap-2"
     >
@@ -32,6 +32,6 @@ export default async function page() {
       ) : (
         <div>{guideCards}</div>
       )}
-    </div>
+    </main>
   );
 }
